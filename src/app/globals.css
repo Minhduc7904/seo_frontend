@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --layout-cols-mobile: 4;
+  --layout-cols-tablet: 8;
+  --layout-cols-desktop: 12;
+  --layout-desktop-col-width: 80px;
+  --layout-column-gap: 20px;
+  --layout-inline-padding: 16px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-open-sans);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-open-sans), "Open Sans", Arial, Helvetica, sans-serif;
+}
+
+.layout-shell {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--layout-inline-padding);
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--layout-cols-mobile), minmax(0, 1fr));
+  column-gap: var(--layout-column-gap);
+}
+
+.layout-grid>* {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --layout-inline-padding: 24px;
+  }
+
+  .layout-grid {
+    grid-template-columns: repeat(var(--layout-cols-tablet), minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .layout-shell {
+    max-width: calc((var(--layout-cols-desktop) * var(--layout-desktop-col-width)) + ((var(--layout-cols-desktop) - 1) * var(--layout-column-gap)) + (var(--layout-inline-padding) * 2));
+  }
+
+  .layout-grid {
+    grid-template-columns: repeat(var(--layout-cols-desktop),
+        var(--layout-desktop-col-width));
+    justify-content: center;
+  }
+}
