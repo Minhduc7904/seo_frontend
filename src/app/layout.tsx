@@ -25,13 +25,13 @@ export default function RootLayout({
       className={`${openSans.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <div className="layout-shell min-h-full">
-          <div className="layout-grid min-h-full">
-            <Header />
-            {children}
-            <Footer />
-          </div>
-        </div>
+        {/* <div className="layout-shell min-h-full"> */}
+        {/* <div className="layout-grid min-h-full"> */}
+        {/* <Header /> */}
+        {children}
+        {/* <Footer /> */}
+        {/* </div> */}
+        {/* </div> */}
       </body>
     </html>
   );
