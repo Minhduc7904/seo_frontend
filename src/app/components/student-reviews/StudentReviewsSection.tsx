@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import MediaRenderer from "@/components/common/MediaRenderer";
 import { useSeoMediaSlot } from "@/hooks/useSeoMediaSlot";
@@ -88,15 +89,21 @@ export default function StudentReviewsSection() {
         <section className="col-span-full mt-16 w-full">
             <div className="layout-grid items-center gap-y-10">
                 <div className="col-span-4 md:col-span-8 xl:col-span-5">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-[#194DB6]/15 bg-white px-4 py-2 shadow-sm shadow-[#194DB6]/5">
-                        <span className="flex -space-x-2">
-                            <span className="h-6 w-6 rounded-full bg-[#194DB6]" />
-                            <span className="h-6 w-6 rounded-full bg-[#FDD22C]" />
-                            <span className="h-6 w-6 rounded-full bg-zinc-300" />
-                        </span>
-                        <span className="text-xs font-bold uppercase tracking-[0.04em] text-zinc-800 md:text-sm">
-                            Đánh giá từ học sinh BeeEdu
-                        </span>
+                    <div className="inline-flex w-full flex-wrap items-center gap-2">
+                        <h2 className="text-xl font-bold text-blue-800">ĐÁNH GIÁ TỪ HỌC SINH</h2>
+
+                        <div className="relative -rotate-2 rounded-[28px] bg-cyan-300 px-5 py-2.5">
+                            <Image
+                                src="/icon/canhOng.png"
+                                alt=""
+                                width={24}
+                                height={24}
+                                className="absolute -right-0 -top-3 h-6 w-6 rotate-2"
+                            />
+                            <span className="inline-flex items-center text-xl font-bold text-blue-800">
+                                BEEEDU
+                            </span>
+                        </div>
                     </div>
 
                     <h2 className="mt-7 text-3xl font-bold leading-tight text-zinc-950 md:text-4xl xl:text-5xl">

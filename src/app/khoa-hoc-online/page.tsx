@@ -1,11 +1,13 @@
 import PagePoster from "@/components/common/PagePoster";
+import { PAGE_SEO_MEDIA_SLOTS } from "@/lib/api";
 
 export default function KhoaHocOnlinePage() {
   return (
     <div className="space-y-8">
       <PagePoster
         title="Khóa học Online"
-        imageSrc="/images/khoa_online/poster.png"
+        slot={PAGE_SEO_MEDIA_SLOTS.onlineCourse.hero}
+        fallbackImageSrc="/images/khoa_online/poster.png"
         imageAlt="Poster trang khóa học online"
       />
 

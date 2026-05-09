@@ -3,12 +3,12 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Đội ngũ | Bee Academy",
     description:
-        "Giới thiệu đội ngũ giảng viên và cố vấn chuyên môn tại Bee Academy với kinh nghiệm giảng dạy thực tế.",
+        "Giới thiệu đội ngũ Giáo viên và cố vấn chuyên môn tại Bee Academy với kinh nghiệm giảng dạy thực tế.",
     alternates: { canonical: "/doi-ngu" },
     openGraph: {
         title: "Đội ngũ | Bee Academy",
         description:
-            "Giới thiệu đội ngũ giảng viên và cố vấn chuyên môn tại Bee Academy với kinh nghiệm giảng dạy thực tế.",
+            "Giới thiệu đội ngũ Giáo viên và cố vấn chuyên môn tại Bee Academy với kinh nghiệm giảng dạy thực tế.",
         url: "/doi-ngu",
         type: "website",
     },

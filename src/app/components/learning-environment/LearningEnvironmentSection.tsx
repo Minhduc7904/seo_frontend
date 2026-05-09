@@ -93,29 +93,29 @@ export default function LearningEnvironmentSection() {
         <section className="col-span-full mt-16 w-full">
             <div className="layout-grid gap-y-8">
                 <div className="col-span-4 flex justify-center md:col-span-8 xl:col-span-12">
-                    <div className="inline-flex items-center gap-3 rounded-full border border-zinc-200 bg-white px-5 py-3 shadow-sm">
-                        <span className="flex -space-x-2">
-                            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#194DB6] text-[10px] font-bold text-white">
-                                Bee
+                    <div className="inline-flex w-full flex-wrap items-center justify-center gap-3">
+                        <h2 className="text-3xl font-bold text-blue-800">TOÁN THẦY BEE</h2>
+
+                        <div className="relative -rotate-2 rounded-[36px] bg-cyan-300 px-8 py-4">
+                            <Image
+                                src="/icon/canhOng.png"
+                                alt=""
+                                width={32}
+                                height={32}
+                                className="absolute -right-0 -top-4 h-8 w-8 rotate-2"
+                            />
+                            <span className="inline-flex items-center text-3xl font-bold text-blue-800">
+                                TẠI BẠCH MAI
                             </span>
-                            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FDD22C] text-[10px] font-bold text-blue-900">
-                                Edu
-                            </span>
-                            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#194DB6] text-[10px] font-bold text-[#FDD22C]">
-                                TH
-                            </span>
-                        </span>
-                        <span className="text-sm font-bold uppercase tracking-[0.04em] text-zinc-800">
-                            Toán thầy Bee tại Bạch Mai
-                        </span>
+                        </div>
                     </div>
                 </div>
 
                 <div className="col-span-4 text-center md:col-span-8 xl:col-span-12">
-                    <h2 className="mx-auto max-w-[760px] text-3xl font-bold leading-tight text-zinc-950 md:text-4xl xl:text-5xl">
+                    <h2 className="mx-auto max-w-[800px] text-3xl font-bold leading-tight text-zinc-950 md:text-4xl xl:text-5xl">
                         Môi trường học Toán giúp học sinh tiến bộ rõ ràng
                     </h2>
-                    <p className="mx-auto mt-4 max-w-[760px] text-base leading-7 text-zinc-600 md:text-lg">
+                    <p className="mx-auto mt-4 max-w-[800px] text-base leading-7 text-zinc-600 md:text-lg">
                         BeeEdu / Toán thầy Bee kết hợp lớp học offline tại 315 Bạch Mai với hệ thống luyện tập
                         online, giúp học sinh làm đề, theo dõi tiến độ và ôn thi THPT Quốc gia cùng thầy Ong
                         Khắc Ngọc.

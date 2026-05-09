@@ -1,11 +1,13 @@
 import PagePoster from "@/components/common/PagePoster";
+import { PAGE_SEO_MEDIA_SLOTS } from "@/lib/api";
 
 export default function ThuVienPage() {
     return (
         <div className="space-y-8">
             <PagePoster
                 title="Thư viện"
-                imageSrc="/images/tai_lieu_hoc/poster.png"
+                slot={PAGE_SEO_MEDIA_SLOTS.library.hero}
+                fallbackImageSrc="/images/tai_lieu_hoc/poster.png"
                 imageAlt="Poster trang thư viện"
             />
 

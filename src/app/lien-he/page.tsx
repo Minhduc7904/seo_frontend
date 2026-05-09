@@ -1,11 +1,13 @@
 import PagePoster from "@/components/common/PagePoster";
+import { PAGE_SEO_MEDIA_SLOTS } from "@/lib/api";
 
 export default function LienHePage() {
     return (
         <div className="space-y-8">
             <PagePoster
                 title="Liên hệ"
-                imageSrc="/images/lien_he/poster.png"
+                slot={PAGE_SEO_MEDIA_SLOTS.contact.hero}
+                fallbackImageSrc="/images/lien_he/poster.png"
                 imageAlt="Poster trang liên hệ"
             />
 

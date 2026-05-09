@@ -1,20 +1,24 @@
-import PagePoster from "@/components/common/PagePoster";
+import AboutHeroSection from "@/app/gioi-thieu/components/about-hero/AboutHeroSection";
+import AboutOverviewSection from "@/app/gioi-thieu/components/about-overview/AboutOverviewSection";
+import AboutPurposeSection from "@/app/gioi-thieu/components/about-purpose/AboutPurposeSection";
+import AboutStorySection from "@/app/gioi-thieu/components/about-story/AboutStorySection";
+import RevealOnScroll from "@/components/common/RevealOnScroll";
 
 export default function GioiThieuPage() {
     return (
-        <div className="space-y-8">
-            <PagePoster
-                title="Giới thiệu Bee Academy"
-                imageSrc="/images/gioi_thieu/poster.png"
-                imageAlt="Poster trang giới thiệu Bee Academy"
-            />
-
-            <div className="space-y-4">
-                <h2 className="text-3xl font-bold text-blue-900">Giới thiệu Bee Academy</h2>
-                <p className="text-base leading-7 text-slate-700">
-                    Đây là trang giới thiệu cơ bản. Nội dung chi tiết về tầm nhìn, sứ mệnh và giá trị khác biệt sẽ được cập nhật ở bước thiết kế tiếp theo.
-                </p>
-            </div>
+        <div className="space-y-16 pb-16">
+            <RevealOnScroll className="w-full">
+                <AboutHeroSection />
+            </RevealOnScroll>
+            <RevealOnScroll className="w-full">
+                <AboutOverviewSection />
+            </RevealOnScroll>
+            <RevealOnScroll className="w-full">
+                <AboutPurposeSection />
+            </RevealOnScroll>
+            <RevealOnScroll className="w-full">
+                <AboutStorySection />
+            </RevealOnScroll>
         </div>
     );
 }

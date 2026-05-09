@@ -19,7 +19,7 @@ export const PAGE_SEO_MEDIA_SLOTS = {
         footerBanner: "footer_banner",
     },
     about: {
-        hero: "about_hero",
+        hero: "about_hero_center",
         gallery: "about_gallery",
         banner: "about_banner",
     },

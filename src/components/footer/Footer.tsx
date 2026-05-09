@@ -34,7 +34,6 @@ export default function Footer() {
                         <div className="inline-flex items-center rounded-md px-3 py-2">
                             <Image src="/images/footer/Logo.svg" alt="Bee logo" width={153} height={100} className="h-16 w-auto" />
                         </div>
-
                         <div className="mt-7 inline-flex flex-col items-center gap-3 rounded-[36px] bg-white px-5 py-4 text-blue-800">
                             <p className="text-xl font-semibold">Kết nối với Bee tại</p>
                             <div className="inline-flex items-center gap-6">
@@ -54,7 +53,6 @@ export default function Footer() {
                                 </Link>
                             </div>
                         </div>
-
                         <div className="mt-7 space-y-4 text-xl">
                             <p className="inline-flex items-center gap-4">
                                 <Image src="/images/footer/Telephone.svg" alt="Điện thoại" width={26} height={26} className="h-6 w-6" />
@@ -74,7 +72,6 @@ export default function Footer() {
                             </p>
                         </div>
                     </section>
-
                     <section className="col-span-4 md:col-span-4 xl:col-span-3">
                         <h3 className="text-3xl font-bold">VỀ BEE</h3>
                         <ul className="mt-6 space-y-4">
@@ -88,7 +85,6 @@ export default function Footer() {
                             ))}
                         </ul>
                     </section>
-
                     <section className="col-span-4 md:col-span-4 xl:col-span-4">
                         <h3 className="text-3xl font-bold">CHƯƠNG TRÌNH HỌC</h3>
                         <ul className="mt-6 space-y-4">
@@ -100,8 +96,6 @@ export default function Footer() {
                             ))}
                         </ul>
                     </section>
-
-
                 </div>
             </div>
         </footer>

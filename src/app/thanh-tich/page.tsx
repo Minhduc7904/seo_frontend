@@ -1,11 +1,13 @@
 import PagePoster from "@/components/common/PagePoster";
+import { PAGE_SEO_MEDIA_SLOTS } from "@/lib/api";
 
 export default function ThanhTichPage() {
   return (
     <div className="space-y-8">
       <PagePoster
         title="Thành tích"
-        imageSrc="/images/thanh_tich/poster.png"
+        slot={PAGE_SEO_MEDIA_SLOTS.achievements.hero}
+        fallbackImageSrc="/images/thanh_tich/poster.png"
         imageAlt="Poster trang thành tích"
       />
 
