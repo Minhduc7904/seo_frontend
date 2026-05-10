@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import LibraryBreadcrumb from "@/app/thu-vien/components/library-breadcrumb/LibraryBreadcrumb";
+import LibraryHeroSection from "@/app/thu-vien/components/library-hero/LibraryHeroSection";
 
 export const metadata: Metadata = {
     title: "Thư viện | Bee Academy",
@@ -18,8 +20,10 @@ export default function ThuVienLayout({
     children,
 }: Readonly<{ children: React.ReactNode }>) {
     return (
-        <section className="col-span-full ">
-            <div className="bg-white">{children}</div>
+        <section className="col-span-full bg-white">
+            <LibraryHeroSection />
+            <LibraryBreadcrumb />
+            {children}
         </section>
     );
 }

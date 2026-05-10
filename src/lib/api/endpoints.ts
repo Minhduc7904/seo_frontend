@@ -12,5 +12,9 @@ export const API_ENDPOINTS = {
         publicSlotItems: (code: string) =>
             `/seo-media/public/slots/${encodeURIComponent(code)}/items`,
     },
+    exams: {
+        publicSeoList: "/exams/public/seo",
+        publicSeoDetail: (id: string | number) => `/exams/public/seo/${id}`,
+    },
     contact: "/contact",
 } as const;
