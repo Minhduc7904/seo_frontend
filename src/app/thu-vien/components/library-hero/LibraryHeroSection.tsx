@@ -21,9 +21,7 @@ function LibraryTitle() {
                     height={32}
                     className="absolute -right-0 -top-4 h-8 w-8 rotate-2"
                 />
-                <span className="inline-flex items-center text-2xl font-bold text-blue-800 md:text-4xl">
-                    ĐỀ THI
-                </span>
+                <span className="inline-flex items-center text-2xl font-bold text-blue-800 md:text-4xl">ĐỀ THI</span>
             </div>
         </div>
     );

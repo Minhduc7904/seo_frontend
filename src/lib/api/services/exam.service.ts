@@ -12,6 +12,12 @@ export type PublicSeoExamListQueryParams = {
     sortBy?: string;
     sortOrder?: "ASC" | "DESC" | "asc" | "desc";
 };
+export type PublicSeoRelatedExamQueryParams = {
+    limit?: number;
+};
+export type PublicSeoLatestExamQueryParams = {
+    limit?: number;
+};
 
 export type PublicSeoExamItem = Record<string, unknown>;
 export type PublicSeoExamDetail = Record<string, unknown>;
@@ -39,10 +45,26 @@ export const examService = {
         return response.data;
     },
 
-    async getPublicSeoExamById(id: string | number) {
+    async getPublicSeoExamBySlug(slug: string) {
         const response = await apiClient.get<ApiResponse<PublicSeoExamDetail>>(
-            API_ENDPOINTS.exams.publicSeoDetail(id),
+            API_ENDPOINTS.exams.publicSeoDetail(slug),
         );
+
+        return response.data;
+    },
+
+    async getPublicSeoRelatedExams(slug: string, params: PublicSeoRelatedExamQueryParams = {}) {
+        const response = await apiClient.get<
+            ApiResponse<PublicSeoExamItem[] | PublicSeoExamListResponse> | PublicSeoExamListResponse
+        >(API_ENDPOINTS.exams.publicSeoRelated(slug), { params });
+
+        return response.data;
+    },
+
+    async getPublicSeoLatestExams(params: PublicSeoLatestExamQueryParams = {}) {
+        const response = await apiClient.get<
+            ApiResponse<PublicSeoExamItem[] | PublicSeoExamListResponse> | PublicSeoExamListResponse
+        >(API_ENDPOINTS.exams.publicSeoLatest, { params });
 
         return response.data;
     },

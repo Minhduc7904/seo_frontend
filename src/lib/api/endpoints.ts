@@ -14,7 +14,12 @@ export const API_ENDPOINTS = {
     },
     exams: {
         publicSeoList: "/exams/public/seo",
-        publicSeoDetail: (id: string | number) => `/exams/public/seo/${id}`,
+        publicSeoDetail: (slug: string) => `/exams/public/seo/${encodeURIComponent(slug)}`,
+        publicSeoRelated: (slug: string) => `/exams/public/seo/${encodeURIComponent(slug)}/related`,
+        publicSeoLatest: "/exams/public/seo/latest",
+    },
+    subjects: {
+        publicSeoList: "/subjects/public/seo",
     },
     contact: "/contact",
 } as const;

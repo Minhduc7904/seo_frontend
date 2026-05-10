@@ -14,15 +14,14 @@ export type UsePublicSeoExamByIdResult = {
     error: Error | null;
     refetch: () => Promise<void>;
 };
-
-export function usePublicSeoExamById(id?: string | number): UsePublicSeoExamByIdResult {
+export function usePublicSeoExamById(slug?: string): UsePublicSeoExamByIdResult {
     const [response, setResponse] = useState<ApiResponse<PublicSeoExamDetail> | null>(null);
     const [exam, setExam] = useState<PublicSeoExamDetail | null>(null);
-    const [loading, setLoading] = useState(Boolean(id));
+    const [loading, setLoading] = useState(Boolean(slug));
     const [error, setError] = useState<Error | null>(null);
 
     const fetchExam = useCallback(async () => {
-        if (id === undefined || id === null || id === "") {
+        if (slug === undefined || slug === null || slug === "") {
             setResponse(null);
             setExam(null);
             setLoading(false);
@@ -34,7 +33,7 @@ export function usePublicSeoExamById(id?: string | number): UsePublicSeoExamById
         setError(null);
 
         try {
-            const data = await examService.getPublicSeoExamById(id);
+            const data = await examService.getPublicSeoExamBySlug(slug);
             setResponse(data);
             setExam(data.data);
         } catch (fetchError) {
@@ -44,7 +43,7 @@ export function usePublicSeoExamById(id?: string | number): UsePublicSeoExamById
         } finally {
             setLoading(false);
         }
-    }, [id]);
+    }, [slug]);
 
     useEffect(() => {
         void fetchExam();

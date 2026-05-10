@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "github-markdown-css/github-markdown.css";
+@import "katex/dist/katex.min.css";
 
 :root {
   --background: #ffffff;
@@ -151,4 +153,47 @@ html {
     filter: none;
     transition: none;
   }
+}
+
+.bee-markdown.markdown-body {
+  background: transparent;
+  color: #1e293b;
+  max-width: none;
+  padding: 0;
+  font-family: var(--font-open-sans), "Open Sans", Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  word-break: break-word;
+}
+
+.bee-markdown.markdown-body :where(h1, h2, h3, h4, h5, h6) {
+  color: #0f172a;
+}
+
+.bee-markdown.markdown-body a {
+  color: #1d4ed8;
+}
+
+.bee-markdown.markdown-body a:hover {
+  color: #1e3a8a;
+}
+
+.bee-markdown.markdown-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Hide assistive MathML layer to prevent duplicate visual rendering of formulas. */
+.bee-markdown .katex .katex-mathml,
+.bee-markdown .mjx-assistive-mml,
+.bee-markdown .MJX_Assistive_MathML {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
 }

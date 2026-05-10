@@ -7,13 +7,15 @@ import { EXAM_TYPES } from "./exam-types";
 export default function ExamTypeSelectorSection() {
     const router = useRouter();
     const pathname = usePathname();
-    const currentExamTypeId = pathname.split("/").filter(Boolean)[1];
+    const pathSegments = pathname.split("/").filter(Boolean);
+    const examTypeLabelIndex = pathSegments.indexOf("loai-de-thi");
+    const currentExamTypeId = examTypeLabelIndex >= 0 ? pathSegments[examTypeLabelIndex + 1] : undefined;
     const selectedExamTypeId = currentExamTypeId ?? EXAM_TYPES[0].id;
 
     return (
         <section className="rounded-[1.6rem] bg-white p-6 md:p-7">
             <div className="flex items-center justify-center gap-3">
-                <h3 className="text-center text-2xl font-extrabold leading-tight text-slate-900">Chon loai de thi</h3>
+                <h3 className="text-center text-2xl font-extrabold leading-tight text-slate-900">Chọn loại đề thi</h3>
             </div>
 
             <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -24,7 +26,7 @@ export default function ExamTypeSelectorSection() {
                         <button
                             key={examType.id}
                             type="button"
-                            onClick={() => router.push(`/thu-vien/${examType.id}`)}
+                            onClick={() => router.push(`/thu-vien/de-thi/mon-hoc/toan/khoi/lop-12/loai-de-thi/${examType.id}`)}
                             className={`group relative overflow-hidden rounded-2xl border text-left transition ${
                                 isActive
                                     ? "border-[#0D41A9] shadow-[0_16px_32px_rgba(13,65,169,0.22)] ring-2 ring-[#0D41A9]/25"
@@ -34,7 +36,7 @@ export default function ExamTypeSelectorSection() {
                             <div className="relative aspect-[16/10] w-full overflow-hidden">
                                 <Image
                                     src={examType.cardImageSrc}
-                                    alt={`Card ${examType.name}`}
+                                    alt={`Ảnh minh họa ${examType.name}`}
                                     fill
                                     className={`object-cover transition duration-500 ${
                                         isActive ? "scale-[1.03]" : "group-hover:scale-[1.03]"
