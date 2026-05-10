@@ -13,6 +13,8 @@ const PAGE_STYLES = [
     "rotate-3 translate-x-2 -translate-y-1",
 ] as const;
 
+const HOME_STUDENT_REVIEW_MEDIA_SIZE = { width: 1040, height: 720 };
+
 function getPageZIndex(pageIndex: number, activePageIndex: number) {
     const distance = (pageIndex - activePageIndex + 3) % 3;
 
@@ -48,6 +50,8 @@ function ReviewMediaCard({
                     videoAutoPlay={isActive}
                     videoControls={false}
                     videoLoop
+                    fallbackWidth={HOME_STUDENT_REVIEW_MEDIA_SIZE.width}
+                    fallbackHeight={HOME_STUDENT_REVIEW_MEDIA_SIZE.height}
                 />
             ) : (
                 <div className="h-full w-full bg-white" />

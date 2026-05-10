@@ -31,6 +31,8 @@ const TEACHER_PROFILES: TeacherProfile[] = [
     { id: 6, role: "Giáo viên Toán", name: "Cô NGÔ THU HẰNG", years: 6 },
 ];
 
+const HOME_TEACHER_MEDIA_SIZE = { width: 744, height: 860 };
+
 function TeacherSectionHeader() {
     return (
         <>
@@ -87,6 +89,8 @@ function TeacherSlideCard({ teacher, isActive }: { teacher: TeacherCardData; isA
                         item={teacher.media}
                         className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                         imageLoading="lazy"
+                        fallbackWidth={HOME_TEACHER_MEDIA_SIZE.width}
+                        fallbackHeight={HOME_TEACHER_MEDIA_SIZE.height}
                     />
                 ) : (
                     <div className="flex h-full w-full items-center justify-center bg-[#FDD22C]/25 p-6 text-center text-sm font-semibold text-blue-900">
