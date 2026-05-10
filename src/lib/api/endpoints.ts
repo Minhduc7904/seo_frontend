@@ -21,5 +21,9 @@ export const API_ENDPOINTS = {
     subjects: {
         publicSeoList: "/subjects/public/seo",
     },
+    questions: {
+        publicSeoSearch: "/questions/public/seo/search",
+        publicSeoDetail: (slug: string) => `/questions/public/seo/${encodeURIComponent(slug)}`,
+    },
     contact: "/contact",
 } as const;

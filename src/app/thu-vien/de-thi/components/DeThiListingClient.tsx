@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import RevealOnScroll from "@/components/common/RevealOnScroll";
+import Pagination from "@/components/common/Pagination";
 import { EXAM_TYPE_BY_ID, EXAM_TYPES } from "@/app/thu-vien/components/exam-type-selector/exam-types";
 import { parseGradeFromSlug, resolveExamTypeLabel } from "@/app/thu-vien/de-thi/seo";
 import { usePublicSeoExams } from "@/hooks/usePublicSeoExams";
@@ -26,6 +27,7 @@ type ExamFilters = {
     search: string;
     grade: string;
     subjectId: string;
+    page: number;
 };
 
 type SubjectOption = {
@@ -141,9 +143,20 @@ function buildExamTypePath(examTypeId: string, filters: ExamFilters, subjects: S
     return `/thu-vien/de-thi/mon-hoc/${subjectSlug}/khoi/lop-${resolvedGrade}/loai-de-thi/${examTypeId}`;
 }
 
-function buildUrlWithSearch(path: string, search: string) {
+function buildUrlWithQuery(path: string, search: string, page: number) {
+    const params = new URLSearchParams();
     const nextSearch = search.trim();
-    return nextSearch ? `${path}?search=${encodeURIComponent(nextSearch)}` : path;
+
+    if (nextSearch) {
+        params.set("search", nextSearch);
+    }
+
+    if (page > 1) {
+        params.set("page", String(page));
+    }
+
+    const query = params.toString();
+    return query ? `${path}?${query}` : path;
 }
 
 function buildExamDetailPath({
@@ -168,6 +181,34 @@ function buildExamDetailPath({
     }
 
     return `/thu-vien/de-thi/mon-hoc/${subjectSlug}/chi-tiet/${slug}`;
+}
+
+function getPaginationMeta(response: Record<string, unknown> | null, fallbackPage: number) {
+    if (!response) {
+        return {
+            page: fallbackPage,
+            total: 0,
+            totalPages: 1,
+            hasPrevious: fallbackPage > 1,
+            hasNext: false,
+        };
+    }
+
+    const meta = (response.meta as Record<string, unknown> | undefined) ?? {};
+
+    const page = Number(meta.page ?? response.page ?? fallbackPage) || fallbackPage;
+    const total = Number(meta.total ?? response.total ?? 0) || 0;
+    const totalPages = Number(meta.totalPages ?? response.totalPages ?? 1) || 1;
+    const hasPrevious = Boolean(meta.hasPrevious ?? page > 1);
+    const hasNext = Boolean(meta.hasNext ?? page < totalPages);
+
+    return {
+        page,
+        total,
+        totalPages,
+        hasPrevious,
+        hasNext,
+    };
 }
 
 type ExamTypeFilterSectionProps = {
@@ -241,7 +282,7 @@ function ExamTypeFilterSection({
                                 type="button"
                                 onClick={() => {
                                     const path = buildExamTypePath(item.id, filters, subjects);
-                                    router.push(buildUrlWithSearch(path, filters.search));
+                                    router.push(buildUrlWithQuery(path, filters.search, 1));
                                 }}
                                 className={`rounded-lg border px-3 py-2 text-sm font-semibold transition ${
                                     isActive
@@ -358,15 +399,19 @@ export default function DeThiListingClient({
     }, [subjectSlug, subjectOptions]);
 
     const appliedFilters = useMemo<ExamFilters>(() => {
+        const page = Number(searchParams.get("page")) || 1;
+        const resolvedGrade = routeLevel === "subject" ? "" : rawGrade || DEFAULT_GRADE;
+
         return {
             search: searchParams.get("search")?.trim() ?? "",
-            grade: rawGrade || DEFAULT_GRADE,
+            grade: resolvedGrade,
             subjectId: subjectIdFromSlug,
+            page: page > 0 ? page : 1,
         };
-    }, [rawGrade, searchParams, subjectIdFromSlug]);
+    }, [rawGrade, routeLevel, searchParams, subjectIdFromSlug]);
 
     const { exams, response, loading, error } = usePublicSeoExams({
-        page: 1,
+        page: appliedFilters.page,
         limit: 20,
         typeOfExam: selectedExamType?.typeOfExam,
         search: appliedFilters.search || undefined,
@@ -376,13 +421,13 @@ export default function DeThiListingClient({
 
     const pushListRoute = (nextFilters: ExamFilters) => {
         const path = buildListPath(routeLevel, nextFilters, subjectOptions);
-        router.push(buildUrlWithSearch(path, nextFilters.search));
+        router.push(buildUrlWithQuery(path, nextFilters.search, nextFilters.page));
     };
 
     const pushRouteKeepingExamType = (nextFilters: ExamFilters) => {
         if (selectedExamType?.id) {
             const examTypePath = buildExamTypePath(selectedExamType.id, nextFilters, subjectOptions);
-            router.push(buildUrlWithSearch(examTypePath, nextFilters.search));
+            router.push(buildUrlWithQuery(examTypePath, nextFilters.search, nextFilters.page));
             return;
         }
 
@@ -421,6 +466,10 @@ export default function DeThiListingClient({
         });
     }, [appliedFilters.grade, appliedFilters.subjectId, exams, routeLevel, selectedExamType?.id, subjectOptions]);
 
+    const pagination = useMemo(() => {
+        return getPaginationMeta((response ?? null) as Record<string, unknown> | null, appliedFilters.page);
+    }, [appliedFilters.page, response]);
+
     return (
         <div className="space-y-8 pb-16">
             <RevealOnScroll className="w-full">
@@ -434,25 +483,29 @@ export default function DeThiListingClient({
                                 pushListRoute({
                                     ...appliedFilters,
                                     search,
+                                    page: 1,
                                 });
                             }}
                             onGradeChange={(grade) => {
                                 pushRouteKeepingExamType({
                                     ...appliedFilters,
                                     grade,
+                                    page: 1,
                                 });
                             }}
                             onSubjectChange={(subjectId) => {
                                 pushRouteKeepingExamType({
                                     ...appliedFilters,
                                     subjectId,
+                                    page: 1,
                                 });
                             }}
                             onClearFilters={() => {
                                 pushListRoute({
                                     search: "",
-                                    grade: DEFAULT_GRADE,
+                                    grade: routeLevel === "subject" ? "" : DEFAULT_GRADE,
                                     subjectId: DEFAULT_SUBJECT_ID,
+                                    page: 1,
                                 });
                             }}
                             subjects={subjectOptions}
@@ -470,7 +523,7 @@ export default function DeThiListingClient({
                                 <span className="inline-flex h-7 w-16 animate-pulse rounded-full bg-slate-200" />
                             ) : (
                                 <span className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold leading-none text-blue-800">
-                                    {response?.total ?? exams.length} đề
+                                    {pagination.total || exams.length} đề
                                 </span>
                             )}
                         </div>
@@ -483,6 +536,21 @@ export default function DeThiListingClient({
                                 columns={2}
                                 skeletonCount={6}
                                 emptyText="Chưa có đề thi phù hợp với bộ lọc hiện tại."
+                            />
+                        ) : null}
+
+                        {!error ? (
+                            <Pagination
+                                page={pagination.page}
+                                totalPages={pagination.totalPages}
+                                hasPrevious={pagination.hasPrevious}
+                                hasNext={pagination.hasNext}
+                                onPageChange={(page) => {
+                                    pushRouteKeepingExamType({
+                                        ...appliedFilters,
+                                        page,
+                                    });
+                                }}
                             />
                         ) : null}
                     </section>

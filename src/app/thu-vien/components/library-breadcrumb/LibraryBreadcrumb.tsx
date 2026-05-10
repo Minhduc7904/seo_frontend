@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,6 +10,7 @@ const HIDDEN_BREADCRUMB_SEGMENTS = new Set(["mon-hoc", "khoi", "loai-de-thi", "c
 const SEGMENT_LABELS: Record<string, string> = {
     "thu-vien": "Thư viện",
     "de-thi": "Đề thi",
+    "cau-hoi": "Câu hỏi",
     "mon-hoc": "Môn học",
     khoi: "Khối",
     "loai-de-thi": "Loại đề thi",

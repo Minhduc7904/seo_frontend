@@ -8,6 +8,8 @@ type MediaRendererProps = {
     className?: string;
     disableLink?: boolean;
     imageLoading?: "eager" | "lazy";
+    fallbackWidth?: number;
+    fallbackHeight?: number;
     videoAutoPlay?: boolean;
     videoControls?: boolean;
     videoLoop?: boolean;
@@ -25,6 +27,8 @@ export default function MediaRenderer({
     className,
     disableLink = false,
     imageLoading,
+    fallbackWidth,
+    fallbackHeight,
     videoAutoPlay = false,
     videoControls = true,
     videoLoop = false,
@@ -46,8 +50,8 @@ export default function MediaRenderer({
         <Image
             src={item.publicUrl}
             alt={item.alt ?? item.originalName}
-            width={item.width || 1200}
-            height={item.height || 675}
+            width={item.width || fallbackWidth || 1200}
+            height={item.height || fallbackHeight || 675}
             className={sharedClassName}
             loading={imageLoading}
             unoptimized

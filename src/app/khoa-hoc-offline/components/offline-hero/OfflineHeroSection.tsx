@@ -128,7 +128,7 @@ export default function OfflineHeroSection() {
                             </div>
                         </div>
 
-                        <article className="rounded-[1.8rem] border border-white/35 bg-white p-5 text-slate-900 shadow-[0_16px_38px_rgba(0,0,0,0.22)]">
+                        {/* <article className="rounded-[1.8rem] border border-white/35 bg-white p-5 text-slate-900 shadow-[0_16px_38px_rgba(0,0,0,0.22)]">
                             <div className="relative overflow-hidden rounded-[1.3rem] bg-slate-100">
                                 {isPreviewLoading ? (
                                     <HeroMediaSkeleton className="aspect-[16/10] w-full" />
@@ -180,7 +180,7 @@ export default function OfflineHeroSection() {
                                     <p className="text-3xl font-extrabold text-[#0D41A9]">Từ 2.400.000đ/tháng</p>
                                 </div>
                             </div>
-                        </article>
+                        </article> */}
                     </div>
                 </div>
             </div>

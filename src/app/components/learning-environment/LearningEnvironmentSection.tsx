@@ -60,6 +60,8 @@ const reactionIcons = [
     },
 ];
 
+const HOME_LEARNING_ENV_MEDIA_SIZE = { width: 800, height: 1000 };
+
 function FeatureCard({ title, description }: { title: string; description: string }) {
     return (
         <article className="flex gap-4 rounded-2xl border border-[#194DB6]/15 bg-white p-5 shadow-sm shadow-[#194DB6]/5 transition-colors hover:border-[#194DB6]/35">
@@ -161,6 +163,8 @@ export default function LearningEnvironmentSection() {
                                     videoAutoPlay
                                     videoControls={false}
                                     videoLoop
+                                    fallbackWidth={HOME_LEARNING_ENV_MEDIA_SIZE.width}
+                                    fallbackHeight={HOME_LEARNING_ENV_MEDIA_SIZE.height}
                                 />
                             ) : (
                                 <div className="flex h-full w-full flex-col items-center justify-center bg-[#FDD22C]/25 p-8 text-center">

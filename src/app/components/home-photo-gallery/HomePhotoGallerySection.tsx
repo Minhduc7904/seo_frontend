@@ -7,15 +7,25 @@ import MediaRenderer from "@/components/common/MediaRenderer";
 import { useSeoMediaSlot } from "@/hooks/useSeoMediaSlot";
 import { PAGE_SEO_MEDIA_SLOTS, type SeoMediaItem } from "@/lib/api";
 
-const COLUMN_LAYOUT: Array<
-    Array<{
-        aspectRatio: string;
-    }>
-> = [
-        [{ aspectRatio: "380 / 320" }, { aspectRatio: "380 / 448" }],
-        [{ aspectRatio: "380 / 384" }, { aspectRatio: "380 / 384" }],
-        [{ aspectRatio: "380 / 432" }, { aspectRatio: "380 / 336" }],
-    ];
+type GalleryCardSize = {
+    width: number;
+    height: number;
+};
+
+const HOME_GALLERY_CARD_SIZES: GalleryCardSize[][] = [
+    [
+        { width: 380, height: 320 },
+        { width: 380, height: 448 },
+    ],
+    [
+        { width: 380, height: 384 },
+        { width: 380, height: 384 },
+    ],
+    [
+        { width: 380, height: 432 },
+        { width: 380, height: 336 },
+    ],
+];
 
 const MOBILE_BREAKPOINT = 768;
 const DESKTOP_BREAKPOINT = 1280;
@@ -48,21 +58,17 @@ function useVisibleColumns() {
     return visibleColumns;
 }
 
-function GalleryMediaCard({
-    item,
-    aspectRatio,
-}: {
-    item: SeoMediaItem;
-    aspectRatio: string;
-}) {
+function GalleryMediaCard({ item, size }: { item: SeoMediaItem; size: GalleryCardSize }) {
     return (
         <div
             className="group/card relative w-full overflow-hidden rounded-3xl bg-zinc-100 shadow-sm shadow-black/10"
-            style={{ aspectRatio }}
+            style={{ aspectRatio: `${size.width} / ${size.height}` }}
         >
             <MediaRenderer
                 item={item}
                 className="h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-105"
+                fallbackWidth={size.width}
+                fallbackHeight={size.height}
             />
         </div>
     );
@@ -153,18 +159,22 @@ export default function HomePhotoGallerySection() {
                             >
                                 <div className="grid w-full grid-cols-1 gap-5">
                                     {loading
-                                        ? [0, 1].map((placeholderIndex) => (
-                                            <div
-                                                key={placeholderIndex}
-                                                className="w-full animate-pulse rounded-3xl bg-zinc-100"
-                                                style={{ aspectRatio: COLUMN_LAYOUT[columnIndex][placeholderIndex].aspectRatio }}
-                                            />
-                                        ))
+                                        ? [0, 1].map((placeholderIndex) => {
+                                            const size = HOME_GALLERY_CARD_SIZES[columnIndex][placeholderIndex];
+
+                                            return (
+                                                <div
+                                                    key={placeholderIndex}
+                                                    className="w-full animate-pulse rounded-3xl bg-zinc-100"
+                                                    style={{ aspectRatio: `${size.width} / ${size.height}` }}
+                                                />
+                                            );
+                                        })
                                         : columns[columnIndex].map((item, itemIndex) => (
                                             <GalleryMediaCard
                                                 key={item.itemId}
                                                 item={item}
-                                                aspectRatio={COLUMN_LAYOUT[columnIndex][itemIndex].aspectRatio}
+                                                size={HOME_GALLERY_CARD_SIZES[columnIndex][itemIndex]}
                                             />
                                         ))}
                                 </div>

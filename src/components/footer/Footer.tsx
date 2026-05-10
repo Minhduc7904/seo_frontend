@@ -19,6 +19,9 @@ const programLinks = [
     "Luyện thi IELTS",
 ];
 
+const FACEBOOK_URL = process.env.NEXT_PUBLIC_FACEBOOK_URL?.trim() || "https://m.facebook.com/loptoanthaybee/";
+const ZALO_URL = process.env.NEXT_PUBLIC_ZALO_URL?.trim() || "https://zalo.me/0333726202";
+
 export default function Footer() {
     return (
         <footer className="col-span-full relative left-1/2 mt-14 w-screen -translate-x-1/2 bg-blue-800 text-white">
@@ -37,20 +40,24 @@ export default function Footer() {
                         <div className="mt-7 inline-flex flex-col items-center gap-3 rounded-[36px] bg-white px-5 py-4 text-blue-800">
                             <p className="text-xl font-semibold">Kết nối với Bee tại</p>
                             <div className="inline-flex items-center gap-6">
-                                <Link
-                                    href="#"
+                                <a
+                                    href={FACEBOOK_URL}
                                     aria-label="Facebook"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="inline-flex h-8 w-8 items-center justify-center"
                                 >
                                     <Image src="/images/footer/Facebook.svg" alt="Facebook" width={32} height={32} className="h-8 w-8" />
-                                </Link>
-                                <Link
-                                    href="#"
+                                </a>
+                                <a
+                                    href={ZALO_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     aria-label="Zalo"
                                     className="inline-flex h-8 w-8 items-center justify-center"
                                 >
                                     <Image src="/images/footer/Zalo.svg" alt="Zalo" width={32} height={32} className="h-8 w-8" />
-                                </Link>
+                                </a>
                             </div>
                         </div>
                         <div className="mt-7 space-y-4 text-xl">

@@ -15,6 +15,8 @@ type SeoMediaSlotProps = {
     intervalMs?: number;
     showControls?: boolean;
     imageLoading?: "eager" | "lazy";
+    fallbackWidth?: number;
+    fallbackHeight?: number;
 };
 
 export default function SeoMediaSlot({
@@ -26,6 +28,8 @@ export default function SeoMediaSlot({
     intervalMs = 5000,
     showControls = true,
     imageLoading,
+    fallbackWidth,
+    fallbackHeight,
 }: SeoMediaSlotProps) {
     const { items, loading, error } = useSeoMediaSlot(code, params);
     const [activeIndex, setActiveIndex] = useState(0);
@@ -82,6 +86,8 @@ export default function SeoMediaSlot({
                             item={item}
                             className={mediaClassName}
                             imageLoading={index === 0 ? imageLoading : undefined}
+                            fallbackWidth={fallbackWidth}
+                            fallbackHeight={fallbackHeight}
                         />
                     </div>
                 ))}

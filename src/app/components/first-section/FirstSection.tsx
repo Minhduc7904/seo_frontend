@@ -5,6 +5,8 @@ import { PAGE_SEO_MEDIA_SLOTS } from "@/lib/api";
 import RankingBoard from "./RankingBoard";
 import StatsSection from "./StatsSection";
 
+const HOME_HERO_MEDIA_SIZE = { width: 1600, height: 800 };
+
 export default function FirstSection() {
     return (
         <section className="col-span-full mt-10 flex flex-col gap-10">
@@ -16,6 +18,8 @@ export default function FirstSection() {
                         className="relative h-full w-full overflow-hidden"
                         mediaClassName="h-full w-full object-cover"
                         imageLoading="eager"
+                        fallbackWidth={HOME_HERO_MEDIA_SIZE.width}
+                        fallbackHeight={HOME_HERO_MEDIA_SIZE.height}
                     />
 
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />

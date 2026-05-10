@@ -24,6 +24,15 @@ export type PublicSeoExamDetail = Record<string, unknown>;
 
 export type PublicSeoExamListResponse = {
     data: PublicSeoExamItem[];
+    meta?: {
+        hasNext?: boolean;
+        hasPrevious?: boolean;
+        limit?: number;
+        nextPage?: number;
+        page?: number;
+        total?: number;
+        totalPages?: number;
+    };
     page?: number;
     limit?: number;
     total?: number;
