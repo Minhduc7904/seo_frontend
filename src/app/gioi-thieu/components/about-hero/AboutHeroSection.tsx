@@ -8,8 +8,8 @@ import MediaRenderer from "@/components/common/MediaRenderer";
 import { useSeoMediaSlot } from "@/hooks/useSeoMediaSlot";
 import { PAGE_SEO_MEDIA_SLOTS } from "@/lib/api";
 
-const FALLBACK_BACKGROUND_SRC = "/images/gioi_thieu/poster.png";
-const FALLBACK_CHARACTER_SRC = "/images/gioi_thieu/poster.png";
+const FALLBACK_BACKGROUND_SRC = "/images/gioi_thieu/Background-Image.jpg";
+const FALLBACK_CHARACTER_SRC = "/images/gioi_thieu/Main-Image.png";
 const FALLBACK_VIDEO_PREVIEW_SRC = "/images/gioi_thieu/poster.png";
 const BRAND_YELLOW = "#FDD22C";
 
