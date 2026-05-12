@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { EXAM_TYPES } from "@/app/thu-vien/components/exam-type-selector/exam-types";
 
 const EXAM_SEGMENT_LABELS = Object.fromEntries(EXAM_TYPES.map((item) => [item.id, item.name]));
@@ -16,6 +16,7 @@ const SEGMENT_LABELS: Record<string, string> = {
     "loai-de-thi": "Loại đề thi",
     "chi-tiet": "Chi tiết",
     "tai-lieu": "Tài liệu",
+    "tim-kiem": "Tìm kiếm",
     "video-bai-giang": "Video bài giảng",
     toan: "Toán",
     "lop-6": "Lớp 6",
@@ -42,6 +43,7 @@ function toTitle(segment: string) {
 
 export default function LibraryBreadcrumb() {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const parts = pathname.split("/").filter(Boolean);
     const crumbs = [{ href: "/", label: "Trang chủ" }];
 
@@ -58,6 +60,18 @@ export default function LibraryBreadcrumb() {
             label: toTitle(part),
         });
     });
+
+    const fromSearch = searchParams.get("from") === "tim-kiem";
+
+    if (fromSearch && pathname.startsWith("/thu-vien/tai-lieu/chi-tiet/")) {
+        const searchCrumb = { href: "/thu-vien/tai-lieu/tim-kiem", label: "Tìm kiếm" };
+        const taiLieuIndex = crumbs.findIndex((crumb) => crumb.href === "/thu-vien/tai-lieu");
+        const hasSearchCrumb = crumbs.some((crumb) => crumb.href === searchCrumb.href);
+
+        if (taiLieuIndex >= 0 && !hasSearchCrumb) {
+            crumbs.splice(taiLieuIndex + 1, 0, searchCrumb);
+        }
+    }
 
     return (
         <nav aria-label="Breadcrumb" className="w-full border-b border-slate-200 bg-white/95">

@@ -10,9 +10,13 @@ function HeroSkeleton() {
     return <div className="h-[220px] w-full animate-pulse bg-zinc-200 md:h-[300px] lg:h-[360px]" />;
 }
 
-type HeroVariant = "library" | "exams" | "questions";
+type HeroVariant = "library" | "documents" | "exams" | "questions";
 
 function resolveHeroVariant(pathname: string): HeroVariant {
+    if (pathname.startsWith("/thu-vien/tai-lieu")) {
+        return "documents";
+    }
+
     if (pathname.startsWith("/thu-vien/cau-hoi")) {
         return "questions";
     }
@@ -25,6 +29,14 @@ function resolveHeroVariant(pathname: string): HeroVariant {
 }
 
 function LibraryTitle({ variant }: { variant: HeroVariant }) {
+    if (variant === "documents") {
+        return (
+            <div className="inline-flex w-full flex-wrap items-center justify-center gap-3">
+                <h1 className="text-2xl font-bold text-blue-800 md:text-4xl">KHO TÀI LIỆU</h1>
+            </div>
+        );
+    }
+
     if (variant === "library") {
         return (
             <div className="inline-flex w-full flex-wrap items-center justify-center gap-3">
