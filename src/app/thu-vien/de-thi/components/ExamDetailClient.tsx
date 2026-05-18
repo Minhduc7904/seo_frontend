@@ -8,6 +8,25 @@ import type { ExamCardData } from "@/app/thu-vien/de-thi/components/ExamCard";
 import { usePublicSeoExamById } from "@/hooks/usePublicSeoExamById";
 import { usePublicSeoRelatedExams } from "@/hooks/usePublicSeoRelatedExams";
 import { usePublicSeoLatestExams } from "@/hooks/usePublicSeoLatestExams";
+import {
+    buildQuestionDetailHref,
+    getQuestionHtml,
+    getQuestionId,
+    getQuestionSlug,
+    getQuestionStatements,
+    getQuestionType,
+    getStatementHtml,
+    getStatementPrefix,
+} from "@/app/thu-vien/cau-hoi/question-utils";
+import {
+    getExamQuestions,
+    getExamSections,
+    getQuestionLabel,
+    getQuestionSectionId,
+    getSectionDescription,
+    getSectionId,
+    getSectionTitle,
+} from "@/app/thu-vien/de-thi/exam-utils";
 
 type ExamDetailClientProps = {
     slug: string;
@@ -134,11 +153,29 @@ export default function ExamDetailClient({ slug, backHref = "/thu-vien/de-thi" }
     const title = useMemo(() => getExamTitle(item, slug), [item, slug]);
     const description = useMemo(() => getExamDescription(item), [item]);
     const processedDescription = useMemo(() => getProcessedDescription(item), [item]);
+    const sections = useMemo(() => getExamSections(item), [item]);
+    const questions = useMemo(() => getExamQuestions(item), [item]);
+    const questionsBySectionId = useMemo(() => {
+        const grouped = new Map<string, Record<string, unknown>[]>();
+
+        questions.forEach((question) => {
+            const questionItem = question as Record<string, unknown>;
+            const sectionId = getQuestionSectionId(questionItem);
+            if (!sectionId) return;
+
+            const currentQuestions = grouped.get(sectionId) ?? [];
+            currentQuestions.push(questionItem);
+            grouped.set(sectionId, currentQuestions);
+        });
+
+        return grouped;
+    }, [questions]);
     const content = useMemo(() => {
         if (!item) return "";
         const htmlOrText = item.examContent ?? item.content ?? item.body ?? item.detail;
         return typeof htmlOrText === "string" ? htmlOrText : "";
     }, [item]);
+    const hasStructuredContent = sections.length > 0;
 
     const relatedCards = useMemo(
         () => toExamCards(relatedExams as Record<string, unknown>[], slug, 10),
@@ -165,7 +202,17 @@ export default function ExamDetailClient({ slug, backHref = "/thu-vien/de-thi" }
 
                     {!loading && !error ? (
                         <article className="space-y-4">
-                            <h1 className="text-2xl font-bold text-blue-900">{title}</h1>
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                                <h1 className="text-2xl font-bold text-blue-900">{title}</h1>
+                                {hasStructuredContent ? (
+                                    <Link
+                                        href={`/thu-vien/de-thi/chi-tiet/${encodeURIComponent(slug)}/lam-thu`}
+                                        className="rounded-lg bg-[#194DB6] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#123d92]"
+                                    >
+                                        Làm thử đề thi
+                                    </Link>
+                                ) : null}
+                            </div>
                             <div className="space-y-5">
                                 {processedDescription ? (
                                     <MarkdownHtmlRenderer html={processedDescription} className="text-base text-slate-700" />
@@ -173,7 +220,128 @@ export default function ExamDetailClient({ slug, backHref = "/thu-vien/de-thi" }
                                     <p className="text-base leading-7 text-slate-700">{description}</p>
                                 ) : null}
 
-                                {content ? (
+                                {hasStructuredContent ? (
+                                    <div className="space-y-8">
+                                        {sections.map((section, sectionIndex) => {
+                                            const sectionItem = section as Record<string, unknown>;
+                                            const sectionId = getSectionId(sectionItem);
+                                            const sectionQuestions = sectionId
+                                                ? questionsBySectionId.get(sectionId) ?? []
+                                                : [];
+                                            const sectionDescription = getSectionDescription(sectionItem);
+
+                                            return (
+                                                <section
+                                                    key={sectionId || `section-${sectionIndex}`}
+                                                    className="space-y-5"
+                                                >
+                                                    <div className="space-y-2">
+                                                        <h2 className="text-xl font-bold text-blue-900">
+                                                            {getSectionTitle(sectionItem, sectionIndex)}
+                                                        </h2>
+                                                        {sectionDescription ? (
+                                                            <MarkdownHtmlRenderer
+                                                                html={sectionDescription}
+                                                                className="text-base text-slate-700"
+                                                            />
+                                                        ) : null}
+                                                    </div>
+
+                                                    {sectionQuestions.length > 0 ? (
+                                                        <div className="space-y-6">
+                                                            {sectionQuestions.map((question, questionIndex) => {
+                                                                const questionType = getQuestionType(question);
+                                                                const statements = getQuestionStatements(question);
+                                                                const questionId = getQuestionId(question);
+                                                                const questionSlug = getQuestionSlug(question);
+
+                                                                return (
+                                                                    <article
+                                                                        key={`${String(
+                                                                            question.questionId ??
+                                                                            question.id ??
+                                                                            `${sectionId}-${questionIndex}`,
+                                                                        )}-${questionIndex}`}
+                                                                        className="space-y-3"
+                                                                    >
+                                                                        <div className="flex items-start gap-2">
+                                                                            <div className="shrink-0 pt-[1px] font-bold text-slate-900">
+                                                                                <span>
+                                                                                    {getQuestionLabel(
+                                                                                        question,
+                                                                                        questionIndex,
+                                                                                    )}
+                                                                                </span>
+                                                                                {questionId ? (
+                                                                                    <span className="ml-2 text-sm font-semibold text-slate-500">
+                                                                                        ID: {questionId}
+                                                                                    </span>
+                                                                                ) : null}
+                                                                            </div>
+                                                                            <MarkdownHtmlRenderer
+                                                                                html={getQuestionHtml(question, questionIndex)}
+                                                                                className="min-w-0 flex-1 text-base text-slate-900 [&_p]:m-0"
+                                                                            />
+                                                                        </div>
+
+                                                                        {questionSlug ? (
+                                                                            <a
+                                                                                href={buildQuestionDetailHref(questionSlug)}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="inline-flex w-fit text-sm font-semibold text-blue-700 hover:text-blue-900"
+                                                                            >
+                                                                                Xem chi tiết câu hỏi
+                                                                            </a>
+                                                                        ) : null}
+
+                                                                        {statements.length > 0 ? (
+                                                                            <div className="space-y-2 pl-0 md:pl-8">
+                                                                                {statements.map((statement, statementIndex) => {
+                                                                                    const statementItem =
+                                                                                        statement as Record<string, unknown>;
+
+                                                                                    return (
+                                                                                        <div
+                                                                                            key={`${String(
+                                                                                                statementItem.statementId ??
+                                                                                                statementItem.id ??
+                                                                                                statementIndex,
+                                                                                            )}-${statementIndex}`}
+                                                                                            className="flex items-start gap-2"
+                                                                                        >
+                                                                                            <span className="mt-[2px] shrink-0 text-sm font-semibold text-slate-600">
+                                                                                                {getStatementPrefix(
+                                                                                                    questionType,
+                                                                                                    statementIndex,
+                                                                                                )}
+                                                                                            </span>
+                                                                                            <MarkdownHtmlRenderer
+                                                                                                html={getStatementHtml(
+                                                                                                    statementItem,
+                                                                                                    statementIndex,
+                                                                                                )}
+                                                                                                className="min-w-0 text-sm text-slate-700 [&_ol]:m-0 [&_p]:m-0 [&_p]:inline [&_ul]:m-0"
+                                                                                            />
+                                                                                        </div>
+                                                                                    );
+                                                                                })}
+                                                                            </div>
+                                                                        ) : null}
+                                                                    </article>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    ) : (
+                                                        <p className="text-sm text-slate-600">
+                                                            Chưa có câu hỏi trong phần này.
+                                                        </p>
+                                                    )}
+                                                </section>
+                                            );
+                                        })}
+                                    </div>
+                                ) : content ? (
                                     <MarkdownHtmlRenderer html={content} />
                                 ) : (
                                     <p className="text-slate-600">Chưa có nội dung chi tiết cho đề thi này.</p>

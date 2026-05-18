@@ -38,6 +38,11 @@ export type {
 export type {
     PublicSeoDocumentItem,
     PublicSeoDocumentDetail,
+    PublicSeoDocumentListQueryParams,
+    PublicSeoDocumentListResponse,
+    PublicSeoDocumentListSortBy,
+    PublicSeoDocumentsByTagQueryParams,
+    PublicSeoDocumentsByTagResponse,
     PublicSeoDocumentLevel,
     PublicSeoDocumentLevelSectionsResponse,
     PublicSeoDocumentSection,

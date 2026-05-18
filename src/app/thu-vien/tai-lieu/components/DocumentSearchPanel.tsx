@@ -6,6 +6,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { DOCUMENT_TAGS, SEARCH_EXTRA_TAGS, type DocumentTag } from "@/app/thu-vien/tai-lieu/data";
+import {
+    DOCUMENT_TAG_TYPES,
+    DOCUMENT_TAG_TYPE_LABELS,
+    isDocumentTagType,
+    type DocumentTagType,
+} from "@/app/thu-vien/tai-lieu/document-tag-types";
 import { useDocumentSearch } from "@/app/thu-vien/tai-lieu/components/DocumentSearchProvider";
 import { usePublicSeoTagSearch } from "@/hooks/usePublicSeoTagSearch";
 import type { PublicSeoTagItem } from "@/lib/api";
@@ -13,6 +19,10 @@ import type { PublicSeoTagItem } from "@/lib/api";
 type DocumentSearchPanelProps = {
     searchPath?: string;
     extraTags?: DocumentTag[];
+};
+
+type SearchableDocumentTag = DocumentTag & {
+    type: DocumentTagType;
 };
 
 const DEFAULT_SEARCH_PATH = "/thu-vien/tai-lieu/tim-kiem";
@@ -27,17 +37,21 @@ function mergeTags(tags: DocumentTag[]) {
     return Array.from(map.values());
 }
 
-function toDocumentTag(item: PublicSeoTagItem): DocumentTag | null {
+function toDocumentTag(item: PublicSeoTagItem): SearchableDocumentTag | null {
     const rawId = item.slug ?? item.id ?? item.tagId;
     const rawLabel = item.name ?? item.label ?? item.slug;
 
-    if ((typeof rawId !== "string" && typeof rawId !== "number") || typeof rawLabel !== "string") {
+    if (
+        (typeof rawId !== "string" && typeof rawId !== "number") ||
+        typeof rawLabel !== "string" ||
+        !isDocumentTagType(item.type)
+    ) {
         return null;
     }
 
     const id = String(rawId).trim();
     const label = rawLabel.trim();
-    return id && label ? { id, label } : null;
+    return id && label ? { id, label, type: item.type } : null;
 }
 
 export default function DocumentSearchPanel({
@@ -78,10 +92,18 @@ export default function DocumentSearchPanel({
     });
 
     const apiTagOptions = useMemo(
-        () => apiTags.map(toDocumentTag).filter((tag): tag is DocumentTag => Boolean(tag)),
+        () => apiTags.map(toDocumentTag).filter((tag): tag is SearchableDocumentTag => Boolean(tag)),
         [apiTags],
     );
-    const tagOptions = apiTagOptions;
+    const groupedTagOptions = useMemo(
+        () =>
+            DOCUMENT_TAG_TYPES.map((type) => ({
+                type,
+                label: DOCUMENT_TAG_TYPE_LABELS[type],
+                tags: apiTagOptions.filter((tag) => tag.type === type),
+            })).filter((group) => group.tags.length > 0),
+        [apiTagOptions],
+    );
 
     const tagLookup = useMemo(() => {
         const allTags = mergeTags([...DOCUMENT_TAGS, ...SEARCH_EXTRA_TAGS, ...extraTags, ...apiTagOptions]);
@@ -181,7 +203,7 @@ export default function DocumentSearchPanel({
                         <button
                             type="button"
                             onClick={handleSearch}
-                            className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700"
+                            className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700"
                         >
                             Tìm kiếm
                         </button>
@@ -203,25 +225,34 @@ export default function DocumentSearchPanel({
                     <p className="px-3 py-2 text-sm text-rose-600">Không tải được tag.</p>
                 ) : !debouncedTagSearch ? (
                     <p className="px-3 py-2 text-sm text-slate-500">Nhập từ khóa để tìm tag.</p>
-                ) : tagOptions.length > 0 ? (
-                    tagOptions.map((tag) => {
-                        const isActive = selectedTags.includes(tag.id);
-                        return (
-                            <button
-                                key={tag.id}
-                                type="button"
-                                onClick={() => toggleTag(tag.id)}
-                                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
-                                    isActive
-                                        ? "bg-blue-50 font-semibold text-blue-800"
-                                        : "text-slate-700 hover:bg-blue-50 hover:text-blue-800"
-                                }`}
-                            >
-                                <span>{tag.label}</span>
-                                {isActive ? <span className="text-xs">Đã chọn</span> : null}
-                            </button>
-                        );
-                    })
+                ) : groupedTagOptions.length > 0 ? (
+                    <div className="space-y-3">
+                        {groupedTagOptions.map((group) => (
+                            <div key={group.type} className="space-y-1.5">
+                                <p className="px-3 text-xs font-semibold uppercase text-slate-500">{group.label}</p>
+                                <div className="space-y-1">
+                                    {group.tags.map((tag) => {
+                                        const isActive = selectedTags.includes(tag.id);
+                                        return (
+                                            <button
+                                                key={tag.id}
+                                                type="button"
+                                                onClick={() => toggleTag(tag.id)}
+                                                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
+                                                    isActive
+                                                        ? "bg-blue-50 font-semibold text-blue-800"
+                                                        : "text-slate-700 hover:bg-blue-50 hover:text-blue-800"
+                                                }`}
+                                            >
+                                                <span>{tag.label}</span>
+                                                {isActive ? <span className="text-xs">Đã chọn</span> : null}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 ) : (
                     <p className="px-3 py-2 text-sm text-slate-500">Không tìm thấy tag.</p>
                 )}
@@ -257,7 +288,7 @@ export default function DocumentSearchPanel({
                         <button
                             type="button"
                             onClick={handleSearch}
-                            className="inline-flex w-fit items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+                            className="inline-flex w-fit cursor-pointer items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
                         >
                             Tìm kiếm
                         </button>

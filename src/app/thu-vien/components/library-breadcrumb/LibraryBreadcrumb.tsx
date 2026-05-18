@@ -58,7 +58,10 @@ export default function LibraryBreadcrumb() {
         }
 
         crumbs.push({
-            href: `/${accumulatedParts.join("/")}`,
+            href:
+                accumulatedParts.join("/") === "thu-vien/tai-lieu"
+                    ? "/thu-vien/tai-lieu/thpt"
+                    : `/${accumulatedParts.join("/")}`,
             label: toTitle(part),
         });
     });
@@ -83,7 +86,7 @@ export default function LibraryBreadcrumb() {
                         const isLast = index === crumbs.length - 1;
 
                         return (
-                            <li key={crumb.href} className="flex items-center gap-2">
+                            <li key={`${crumb.href}-${index}`} className="flex items-center gap-2">
                                 {isLast ? (
                                     <span className="font-semibold text-blue-900">{crumb.label}</span>
                                 ) : (

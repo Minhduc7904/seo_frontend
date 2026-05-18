@@ -13,6 +13,7 @@ export type PublicSeoTagItem = {
     name?: string;
     label?: string;
     slug?: string;
+    type?: string;
 } & Record<string, unknown>;
 
 export type PublicSeoTagSearchResponse = {
