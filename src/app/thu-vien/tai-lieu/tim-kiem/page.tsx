@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SearchResultsClient from "@/app/thu-vien/tai-lieu/tim-kiem/SearchResultsClient";
 import { filterDocuments } from "@/app/thu-vien/tai-lieu/data";
 type SearchPageProps = {
@@ -22,7 +23,9 @@ export default function TaiLieuSearchPage({ searchParams }: SearchPageProps) {
 
     return (
         <div className="space-y-10 pb-16">
-            <SearchResultsClient searchValue={searchValue} selectedTags={selectedTags} results={results} />
+            <Suspense fallback={null}>
+                <SearchResultsClient searchValue={searchValue} selectedTags={selectedTags} results={results} />
+            </Suspense>
         </div>
     );
 }
