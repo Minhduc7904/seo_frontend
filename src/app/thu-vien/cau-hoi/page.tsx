@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import RevealOnScroll from "@/components/common/RevealOnScroll";
 import QuestionSearchSection from "@/app/thu-vien/components/question-search/QuestionSearchSection";
 
@@ -34,7 +35,9 @@ export default function ThuVienCauHoiPage() {
     return (
         <div className="space-y-14 pb-16">
             <RevealOnScroll className="w-full">
-                <QuestionSearchSection />
+                <Suspense fallback={<div className="rounded-[1.6rem] bg-white p-6 md:p-7" />}>
+                    <QuestionSearchSection />
+                </Suspense>
             </RevealOnScroll>
             <RevealOnScroll className="w-full">
                 <section className="rounded-[1.6rem] bg-white p-6 md:p-7">
