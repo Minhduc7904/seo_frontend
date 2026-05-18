@@ -41,10 +41,10 @@ ENV NODE_ENV=production \
 COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
-# Copy build output
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.ts ./next.config.ts
+# Copy build output with correct ownership for the node user
+COPY --from=builder --chown=node:node /app/.next ./.next
+COPY --from=builder --chown=node:node /app/public ./public
+COPY --from=builder --chown=node:node /app/next.config.ts ./next.config.ts
 
 USER node
 
