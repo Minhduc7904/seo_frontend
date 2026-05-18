@@ -12,7 +12,7 @@ type CategoryCard = {
 
 const CATEGORIES: CategoryCard[] = [
   {
-    href: "/thu-vien/tai-lieu",
+    href: "/thu-vien/tai-lieu/thpt",
     title: "Kho tài liệu",
     description: "Tổng hợp tài liệu ôn tập và chuyên đề trọng tâm.",
     Icon: FileText,

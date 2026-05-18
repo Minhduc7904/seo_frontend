@@ -1,6 +1,8 @@
 ﻿import type { Metadata } from "next";
+import { Suspense } from "react";
 import LibraryBreadcrumb from "@/app/thu-vien/components/library-breadcrumb/LibraryBreadcrumb";
 import LibraryHeroSection from "@/app/thu-vien/components/library-hero/LibraryHeroSection";
+import DocumentLevelNav from "@/app/thu-vien/tai-lieu/components/DocumentLevelNav";
 
 export const metadata: Metadata = {
     title: "Thư viện đề thi Toán | BeeEdu - Toán thầy Bee",
@@ -34,7 +36,10 @@ export default function ThuVienLayout({
     return (
         <section className="col-span-full bg-white">
             <LibraryHeroSection />
-            <LibraryBreadcrumb />
+            <DocumentLevelNav />
+            <Suspense fallback={null}>
+                <LibraryBreadcrumb />
+            </Suspense>
             {children}
         </section>
     );

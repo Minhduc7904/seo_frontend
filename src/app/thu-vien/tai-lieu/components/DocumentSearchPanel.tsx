@@ -1,11 +1,14 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { DOCUMENT_TAGS, SEARCH_EXTRA_TAGS, type DocumentTag } from "@/app/thu-vien/tai-lieu/data";
 import { useDocumentSearch } from "@/app/thu-vien/tai-lieu/components/DocumentSearchProvider";
+import { usePublicSeoTagSearch } from "@/hooks/usePublicSeoTagSearch";
+import type { PublicSeoTagItem } from "@/lib/api";
 
 type DocumentSearchPanelProps = {
     searchPath?: string;
@@ -24,12 +27,27 @@ function mergeTags(tags: DocumentTag[]) {
     return Array.from(map.values());
 }
 
+function toDocumentTag(item: PublicSeoTagItem): DocumentTag | null {
+    const rawId = item.slug ?? item.id ?? item.tagId;
+    const rawLabel = item.name ?? item.label ?? item.slug;
+
+    if ((typeof rawId !== "string" && typeof rawId !== "number") || typeof rawLabel !== "string") {
+        return null;
+    }
+
+    const id = String(rawId).trim();
+    const label = rawLabel.trim();
+    return id && label ? { id, label } : null;
+}
+
 export default function DocumentSearchPanel({
     searchPath = DEFAULT_SEARCH_PATH,
     extraTags = [],
 }: DocumentSearchPanelProps) {
     const router = useRouter();
     const markerRef = useRef<HTMLDivElement | null>(null);
+    const tagInputRef = useRef<HTMLInputElement | null>(null);
+    const tagDropdownRef = useRef<HTMLDivElement | null>(null);
     const {
         searchValue,
         setSearchValue,
@@ -41,25 +59,34 @@ export default function DocumentSearchPanel({
     } = useDocumentSearch();
     const [showStickyTags, setShowStickyTags] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [debouncedTagSearch, setDebouncedTagSearch] = useState(tagSearchValue);
+    const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
+    const [tagDropdownStyle, setTagDropdownStyle] = useState<CSSProperties>({});
 
-    const tagOptions = useMemo(() => {
-        const shouldExpandTags = searchValue.trim().length > 0 || tagSearchValue.trim().length > 0;
-        const baseTags = shouldExpandTags
-            ? mergeTags([...DOCUMENT_TAGS, ...SEARCH_EXTRA_TAGS, ...extraTags])
-            : mergeTags([...DOCUMENT_TAGS, ...extraTags]);
-        const term = tagSearchValue.trim().toLowerCase();
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setDebouncedTagSearch(tagSearchValue.trim());
+        }, 500);
 
-        if (!term) {
-            return baseTags;
-        }
+        return () => clearTimeout(timeout);
+    }, [tagSearchValue]);
 
-        return baseTags.filter((tag) => tag.label.toLowerCase().includes(term));
-    }, [extraTags, searchValue, tagSearchValue]);
+    const { tags: apiTags, loading: tagsLoading, error: tagsError } = usePublicSeoTagSearch({
+        search: debouncedTagSearch || undefined,
+        page: 1,
+        limit: 20,
+    });
+
+    const apiTagOptions = useMemo(
+        () => apiTags.map(toDocumentTag).filter((tag): tag is DocumentTag => Boolean(tag)),
+        [apiTags],
+    );
+    const tagOptions = apiTagOptions;
 
     const tagLookup = useMemo(() => {
-        const allTags = mergeTags([...DOCUMENT_TAGS, ...SEARCH_EXTRA_TAGS, ...extraTags]);
+        const allTags = mergeTags([...DOCUMENT_TAGS, ...SEARCH_EXTRA_TAGS, ...extraTags, ...apiTagOptions]);
         return new Map(allTags.map((tag) => [tag.id, tag.label]));
-    }, [extraTags]);
+    }, [apiTagOptions, extraTags]);
 
     const selectedTagLabels = selectedTags.map((tagId) => ({
         id: tagId,
@@ -70,36 +97,63 @@ export default function DocumentSearchPanel({
         const trimmedSearch = searchValue.trim();
         const params = new URLSearchParams();
 
-        if (trimmedSearch) {
-            params.set("search", trimmedSearch);
-        }
-
-        if (selectedTags.length > 0) {
-            params.set("tags", selectedTags.join(","));
-        }
+        if (trimmedSearch) params.set("search", trimmedSearch);
+        if (selectedTags.length > 0) params.set("tags", selectedTags.join(","));
 
         const query = params.toString();
         router.push(query ? `${searchPath}?${query}` : searchPath);
     };
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+    useEffect(() => setIsMounted(true), []);
 
     useEffect(() => {
         const target = markerRef.current;
         if (!target) return;
 
         const observer = new IntersectionObserver(
-            ([entry]) => {
-                setShowStickyTags(!entry.isIntersecting);
-            },
+            ([entry]) => setShowStickyTags(!entry.isIntersecting),
             { rootMargin: "-72px 0px 0px 0px", threshold: 0 },
         );
 
         observer.observe(target);
         return () => observer.disconnect();
     }, []);
+
+    useEffect(() => {
+        const handlePointerDown = (event: MouseEvent) => {
+            const target = event.target as Node;
+            if (!tagDropdownRef.current?.contains(target) && !tagInputRef.current?.contains(target)) {
+                setIsTagDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handlePointerDown);
+        return () => document.removeEventListener("mousedown", handlePointerDown);
+    }, []);
+
+    useEffect(() => {
+        if (!isTagDropdownOpen) return;
+
+        const updatePosition = () => {
+            const rect = tagInputRef.current?.getBoundingClientRect();
+            if (!rect) return;
+
+            setTagDropdownStyle({
+                position: "fixed",
+                top: rect.bottom + 8,
+                left: rect.left,
+                width: rect.width,
+            });
+        };
+
+        updatePosition();
+        window.addEventListener("resize", updatePosition);
+        window.addEventListener("scroll", updatePosition, true);
+        return () => {
+            window.removeEventListener("resize", updatePosition);
+            window.removeEventListener("scroll", updatePosition, true);
+        };
+    }, [isTagDropdownOpen]);
 
     const selectedTagButtons = selectedTagLabels.map((tag) => (
         <button
@@ -113,32 +167,71 @@ export default function DocumentSearchPanel({
         </button>
     ));
 
-    const shouldShowStickyTags = showStickyTags && selectedTagButtons.length > 0;
-    const stickyHeader = shouldShowStickyTags ? (
-        <div className="fixed left-0 right-0 top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-            <div className="layout-grid py-3">
-                <div className="col-span-4 flex flex-wrap items-center justify-between gap-3 md:col-span-8 xl:col-span-12">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                            Tag đã chọn
-                        </span>
-                        {selectedTagButtons}
+    const stickyHeader =
+        showStickyTags && selectedTagButtons.length > 0 ? (
+            <div className="fixed left-0 right-0 top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+                <div className="layout-grid py-3">
+                    <div className="col-span-4 flex flex-wrap items-center justify-between gap-3 md:col-span-8 xl:col-span-12">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Tag đã chọn
+                            </span>
+                            {selectedTagButtons}
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleSearch}
+                            className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700"
+                        >
+                            Tìm kiếm
+                        </button>
                     </div>
-                    <button
-                        type="button"
-                        onClick={handleSearch}
-                        className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700"
-                    >
-                        Tìm kiếm
-                    </button>
                 </div>
             </div>
-        </div>
-    ) : null;
+        ) : null;
+
+    const tagDropdown =
+        isTagDropdownOpen && isMounted ? (
+            <div
+                ref={tagDropdownRef}
+                style={tagDropdownStyle}
+                className="z-[70] max-h-72 overflow-y-auto rounded-xl border border-slate-200 bg-white p-2 shadow-xl"
+            >
+                {tagsLoading ? (
+                    <p className="px-3 py-2 text-sm text-slate-500">Đang tìm tag...</p>
+                ) : tagsError ? (
+                    <p className="px-3 py-2 text-sm text-rose-600">Không tải được tag.</p>
+                ) : !debouncedTagSearch ? (
+                    <p className="px-3 py-2 text-sm text-slate-500">Nhập từ khóa để tìm tag.</p>
+                ) : tagOptions.length > 0 ? (
+                    tagOptions.map((tag) => {
+                        const isActive = selectedTags.includes(tag.id);
+                        return (
+                            <button
+                                key={tag.id}
+                                type="button"
+                                onClick={() => toggleTag(tag.id)}
+                                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
+                                    isActive
+                                        ? "bg-blue-50 font-semibold text-blue-800"
+                                        : "text-slate-700 hover:bg-blue-50 hover:text-blue-800"
+                                }`}
+                            >
+                                <span>{tag.label}</span>
+                                {isActive ? <span className="text-xs">Đã chọn</span> : null}
+                            </button>
+                        );
+                    })
+                ) : (
+                    <p className="px-3 py-2 text-sm text-slate-500">Không tìm thấy tag.</p>
+                )}
+            </div>
+        ) : null;
 
     return (
         <>
             {isMounted && stickyHeader ? createPortal(stickyHeader, document.body) : null}
+            {tagDropdown ? createPortal(tagDropdown, document.body) : null}
 
             <section className="rounded-[1.6rem] bg-white py-6 md:py-7">
                 <div className="layout-grid gap-y-6">
@@ -172,9 +265,7 @@ export default function DocumentSearchPanel({
                         <div className="space-y-2">
                             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tag đã chọn</p>
                             {selectedTagLabels.length > 0 ? (
-                                <div className="flex flex-wrap gap-2">
-                                    {selectedTagButtons}
-                                </div>
+                                <div className="flex flex-wrap gap-2">{selectedTagButtons}</div>
                             ) : (
                                 <p className="text-sm text-slate-500">Chưa chọn tag.</p>
                             )}
@@ -184,33 +275,16 @@ export default function DocumentSearchPanel({
                     <div className="col-span-4 space-y-4 md:col-span-8 xl:col-span-4">
                         <p className="text-lg font-bold text-blue-900">Tag tài liệu</p>
                         <div className="relative">
-                            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                            <Search className="pointer-events-none absolute left-3 top-5 h-4 w-4 -translate-y-1/2 text-slate-400" />
                             <input
+                                ref={tagInputRef}
                                 type="text"
                                 value={tagSearchValue}
                                 onChange={(event) => setTagSearchValue(event.target.value)}
+                                onFocus={() => setIsTagDropdownOpen(true)}
                                 placeholder="Tìm tag tài liệu..."
                                 className="h-10 w-full rounded-lg border border-slate-300 pl-10 pr-3 text-xs text-slate-900 outline-none transition focus:border-blue-500"
                             />
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {tagOptions.map((tag) => {
-                                const isActive = selectedTags.includes(tag.id);
-                                return (
-                                    <button
-                                        key={tag.id}
-                                        type="button"
-                                        onClick={() => toggleTag(tag.id)}
-                                        className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                                            isActive
-                                                ? "border-blue-600 bg-blue-50 text-blue-800"
-                                                : "border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-blue-50/50"
-                                        }`}
-                                    >
-                                        {tag.label}
-                                    </button>
-                                );
-                            })}
                         </div>
                     </div>
                 </div>

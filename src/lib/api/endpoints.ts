@@ -25,5 +25,16 @@ export const API_ENDPOINTS = {
         publicSeoSearch: "/questions/public/seo/search",
         publicSeoDetail: (slug: string) => `/questions/public/seo/${encodeURIComponent(slug)}`,
     },
+    documents: {
+        publicSeoLevelSections: (level: "thpt" | "thcs") => `/documents/public/seo/level/${level}`,
+        publicSeoDetail: (slug: string) => `/documents/public/seo/${encodeURIComponent(slug)}`,
+        publicSeoLatest: "/documents/public/seo/latest",
+        publicSeoRelated: (slug: string) => `/documents/public/seo/${encodeURIComponent(slug)}/related`,
+        publicSeoView: (slug: string) => `/documents/public/seo/${encodeURIComponent(slug)}/view`,
+        publicSeoDownload: (slug: string) => `/documents/public/seo/${encodeURIComponent(slug)}/download`,
+    },
+    tags: {
+        publicSeoSearch: "/tags/public/seo/search",
+    },
     contact: "/contact",
 } as const;

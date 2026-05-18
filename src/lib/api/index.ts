@@ -5,6 +5,8 @@ export { examService } from "./services/exam.service";
 export { questionService } from "./services/question.service";
 export { seoMediaService } from "./services/seo-media.service";
 export { subjectService } from "./services/subject.service";
+export { documentService } from "./services/document.service";
+export { tagService } from "./services/tag.service";
 export type { PageEndpoint, PageKey, PageSeoMediaSlots } from "./constants/page-slots";
 export type {
     ApiResponse,
@@ -33,3 +35,15 @@ export type {
     SeoMediaItem,
     SeoMediaSlotCode,
 } from "./services/seo-media.service";
+export type {
+    PublicSeoDocumentItem,
+    PublicSeoDocumentDetail,
+    PublicSeoDocumentLevel,
+    PublicSeoDocumentLevelSectionsResponse,
+    PublicSeoDocumentSection,
+} from "./services/document.service";
+export type {
+    PublicSeoTagItem,
+    PublicSeoTagSearchQueryParams,
+    PublicSeoTagSearchResponse,
+} from "./services/tag.service";

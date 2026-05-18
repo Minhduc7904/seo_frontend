@@ -167,6 +167,8 @@ function buildStaticPaths(subjectSlugs: string[]) {
         "/lien-he",
         "/thu-vien",
         "/thu-vien/de-thi",
+        "/thu-vien/tai-lieu/thpt",
+        "/thu-vien/tai-lieu/thcs",
     ]);
 
     for (const subjectSlug of subjectSlugs) {

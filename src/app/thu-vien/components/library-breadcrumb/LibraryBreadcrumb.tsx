@@ -16,6 +16,8 @@ const SEGMENT_LABELS: Record<string, string> = {
     "loai-de-thi": "Loại đề thi",
     "chi-tiet": "Chi tiết",
     "tai-lieu": "Tài liệu",
+    thpt: "THPT",
+    thcs: "THCS",
     "tim-kiem": "Tìm kiếm",
     "video-bai-giang": "Video bài giảng",
     toan: "Toán",

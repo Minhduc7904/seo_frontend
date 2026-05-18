@@ -25,7 +25,92 @@ export type ChapterTagGroup = {
     tags: DocumentTag[];
 };
 
+export const DOCUMENT_TYPE_TAGS = [
+    { name: "ĐỀ THI THỬ THPT", slug: "de-thi-thu-thpt" },
+    { name: "ĐỀ THPT CHÍNH THỨC", slug: "de-thpt-chinh-thuc" },
+    { name: "ĐỀ ĐÁNH GIÁ NĂNG LỰC", slug: "de-danh-gia-nang-luc" },
+    { name: "TÀI LIỆU ÔN THI THPT", slug: "tai-lieu-on-thi-thpt" },
+    { name: "TÀI LIỆU TOÁN 12", slug: "tai-lieu-toan-12" },
+    { name: "ĐỀ CƯƠNG TOÁN 12", slug: "de-cuong-toan-12" },
+    { name: "ĐỀ GIỮA HK1 TOÁN 12", slug: "de-giua-hk1-toan-12" },
+    { name: "ĐỀ HK 1 TOÁN 12", slug: "de-hk-1-toan-12" },
+    { name: "ĐỀ GIỮA HK2 TOÁN 12", slug: "de-giua-hk2-toan-12" },
+    { name: "ĐỀ HK 2 TOÁN 12", slug: "de-hk-2-toan-12" },
+    { name: "ĐỀ KHẢO SÁT TOÁN 12", slug: "de-khao-sat-toan-12" },
+    { name: "ĐỀ HSG TOÁN 12", slug: "de-hsg-toan-12" },
+    { name: "GIÁO ÁN TOÁN 12", slug: "giao-an-toan-12" },
+    { name: "TIPS GIẢI TOÁN 12", slug: "tips-giai-toan-12" },
+    { name: "TÀI LIỆU TOÁN 11", slug: "tai-lieu-toan-11" },
+    { name: "ĐỀ CƯƠNG TOÁN 11", slug: "de-cuong-toan-11" },
+    { name: "ĐỀ GIỮA HK1 TOÁN 11", slug: "de-giua-hk1-toan-11" },
+    { name: "ĐỀ HK1 TOÁN 11", slug: "de-hk1-toan-11" },
+    { name: "ĐỀ GIỮA HK2 TOÁN 11", slug: "de-giua-hk2-toan-11" },
+    { name: "ĐỀ HK2 TOÁN 11", slug: "de-hk2-toan-11" },
+    { name: "ĐỀ KHẢO SÁT TOÁN 11", slug: "de-khao-sat-toan-11" },
+    { name: "ĐỀ HSG TOÁN 11", slug: "de-hsg-toan-11" },
+    { name: "GIÁO ÁN TOÁN 11", slug: "giao-an-toan-11" },
+    { name: "TIPS GIẢI TOÁN 11", slug: "tips-giai-toan-11" },
+    { name: "TÀI LIỆU TOÁN 10", slug: "tai-lieu-toan-10" },
+    { name: "ĐỀ CƯƠNG TOÁN 10", slug: "de-cuong-toan-10" },
+    { name: "ĐỀ GIỮA HK1 TOÁN 10", slug: "de-giua-hk1-toan-10" },
+    { name: "ĐỀ HK1 TOÁN 10", slug: "de-hk1-toan-10" },
+    { name: "ĐỀ GIỮA HK2 TOÁN 10", slug: "de-giua-hk2-toan-10" },
+    { name: "ĐỀ HK2 TOÁN 10", slug: "de-hk2-toan-10" },
+    { name: "ĐỀ KHẢO SÁT TOÁN 10", slug: "de-khao-sat-toan-10" },
+    { name: "ĐỀ HSG TOÁN 10", slug: "de-hsg-toan-10" },
+    { name: "GIÁO ÁN TOÁN 10", slug: "giao-an-toan-10" },
+    { name: "TIPS GIẢI TOÁN 10", slug: "tips-giai-toan-10" },
+    { name: "SÁCH GIÁO KHOA THPT", slug: "sach-giao-khoa-thpt" },
+    { name: "SÁCH GIÁO KHOA THCS", slug: "sach-giao-khoa-thcs" },
+    { name: "ĐỀ THI VÀO LỚP 10", slug: "de-thi-vao-lop-10" },
+    { name: "TÀI LIỆU THI VÀO LỚP 10", slug: "tai-lieu-thi-vao-lop-10" },
+    { name: "TÀI LIỆU TOÁN 9", slug: "tai-lieu-toan-9" },
+    { name: "ĐỀ CƯƠNG TOÁN 9", slug: "de-cuong-toan-9" },
+    { name: "ĐỀ GIỮA HK1 TOÁN 9", slug: "de-giua-hk1-toan-9" },
+    { name: "ĐỀ HK1 TOÁN 9", slug: "de-hk1-toan-9" },
+    { name: "ĐỀ GIỮA HK2 TOÁN 9", slug: "de-giua-hk2-toan-9" },
+    { name: "ĐỀ HK2 TOÁN 9", slug: "de-hk2-toan-9" },
+    { name: "ĐỀ KHẢO SÁT TOÁN 9", slug: "de-khao-sat-toan-9" },
+    { name: "ĐỀ HSG TOÁN 9", slug: "de-hsg-toan-9" },
+    { name: "TÀI LIỆU TOÁN 8", slug: "tai-lieu-toan-8" },
+    { name: "ĐỀ CƯƠNG TOÁN 8", slug: "de-cuong-toan-8" },
+    { name: "ĐỀ GIỮA HK1 TOÁN 8", slug: "de-giua-hk1-toan-8" },
+    { name: "ĐỀ HK1 TOÁN 8", slug: "de-hk1-toan-8" },
+    { name: "ĐỀ GIỮA HK2 TOÁN 8", slug: "de-giua-hk2-toan-8" },
+    { name: "ĐỀ HK2 TOÁN 8", slug: "de-hk2-toan-8" },
+    { name: "ĐỀ KHẢO SÁT TOÁN 8", slug: "de-khao-sat-toan-8" },
+    { name: "ĐỀ HSG TOÁN 8", slug: "de-hsg-toan-8" },
+    { name: "TÀI LIỆU TOÁN 7", slug: "tai-lieu-toan-7" },
+    { name: "ĐỀ CƯƠNG TOÁN 7", slug: "de-cuong-toan-7" },
+    { name: "ĐỀ GIỮA HK1 TOÁN 7", slug: "de-giua-hk1-toan-7" },
+    { name: "ĐỀ HK1 TOÁN 7", slug: "de-hk1-toan-7" },
+    { name: "ĐỀ GIỮA HK2 TOÁN 7", slug: "de-giua-hk2-toan-7" },
+    { name: "ĐỀ HK2 TOÁN 7", slug: "de-hk2-toan-7" },
+    { name: "ĐỀ KHẢO SÁT TOÁN 7", slug: "de-khao-sat-toan-7" },
+    { name: "ĐỀ HSG TOÁN 7", slug: "de-hsg-toan-7" },
+    { name: "TÀI LIỆU TOÁN 6", slug: "tai-lieu-toan-6" },
+    { name: "ĐỀ CƯƠNG TOÁN 6", slug: "de-cuong-toan-6" },
+    { name: "ĐỀ GIỮA HK1 TOÁN 6", slug: "de-giua-hk1-toan-6" },
+    { name: "ĐỀ HK1 TOÁN 6", slug: "de-hk1-toan-6" },
+    { name: "ĐỀ GIỮA HK2 TOÁN 6", slug: "de-giua-hk2-toan-6" },
+    { name: "ĐỀ HK2 TOÁN 6", slug: "de-hk2-toan-6" },
+    { name: "ĐỀ KHẢO SÁT TOÁN 6", slug: "de-khao-sat-toan-6" },
+    { name: "ĐỀ HSG TOÁN 6", slug: "de-hsg-toan-6" },
+] as const;
+
+export type DocumentTypeSlug = (typeof DOCUMENT_TYPE_TAGS)[number]["slug"];
+
+type DocumentFilter = {
+    includeAnyTags?: string[];
+    includeAllTags?: string[];
+    limit?: number;
+};
+
 export const DOCUMENT_TAGS: DocumentTag[] = [
+    { id: "lop-6", label: "Tài liệu lớp 6" },
+    { id: "lop-7", label: "Tài liệu lớp 7" },
+    { id: "lop-8", label: "Tài liệu lớp 8" },
+    { id: "lop-9", label: "Tài liệu lớp 9" },
     { id: "lop-10", label: "Tài liệu lớp 10" },
     { id: "lop-11", label: "Tài liệu lớp 11" },
     { id: "lop-12", label: "Tài liệu lớp 12" },
@@ -40,7 +125,46 @@ export const SEARCH_EXTRA_TAGS: DocumentTag[] = [
     { id: "tom-tat", label: "Tài liệu tóm tắt" },
 ];
 
-export const CHAPTER_TAG_GROUPS: ChapterTagGroup[] = [
+export const THCS_CHAPTER_TAG_GROUPS: ChapterTagGroup[] = [
+    {
+        id: "lop-6",
+        title: "Chương lớp 6",
+        tags: [
+            { id: "lop-6-chuong-1", label: "Chương 1: Số tự nhiên" },
+            { id: "lop-6-chuong-2", label: "Chương 2: Số nguyên" },
+            { id: "lop-6-chuong-3", label: "Chương 3: Phân số" },
+        ],
+    },
+    {
+        id: "lop-7",
+        title: "Chương lớp 7",
+        tags: [
+            { id: "lop-7-chuong-1", label: "Chương 1: Số hữu tỉ" },
+            { id: "lop-7-chuong-2", label: "Chương 2: Số thực" },
+            { id: "lop-7-chuong-3", label: "Chương 3: Góc và đường thẳng" },
+        ],
+    },
+    {
+        id: "lop-8",
+        title: "Chương lớp 8",
+        tags: [
+            { id: "lop-8-chuong-1", label: "Chương 1: Đa thức" },
+            { id: "lop-8-chuong-2", label: "Chương 2: Hằng đẳng thức" },
+            { id: "lop-8-chuong-3", label: "Chương 3: Tứ giác" },
+        ],
+    },
+    {
+        id: "lop-9",
+        title: "Chương lớp 9",
+        tags: [
+            { id: "lop-9-chuong-1", label: "Chương 1: Căn bậc hai" },
+            { id: "lop-9-chuong-2", label: "Chương 2: Hàm số bậc nhất" },
+            { id: "lop-9-chuong-3", label: "Chương 3: Hệ thức lượng" },
+        ],
+    },
+];
+
+export const THPT_CHAPTER_TAG_GROUPS: ChapterTagGroup[] = [
     {
         id: "lop-10",
         title: "Chương lớp 10",
@@ -73,6 +197,7 @@ export const CHAPTER_TAG_GROUPS: ChapterTagGroup[] = [
     },
 ];
 
+export const CHAPTER_TAG_GROUPS = [...THCS_CHAPTER_TAG_GROUPS, ...THPT_CHAPTER_TAG_GROUPS];
 export const CHAPTER_TAGS = CHAPTER_TAG_GROUPS.flatMap((group) => group.tags);
 
 const TAG_LABEL_BY_ID = new Map(
@@ -83,7 +208,7 @@ export function getDocumentTagLabel(tagId: string) {
     return TAG_LABEL_BY_ID.get(tagId) ?? tagId;
 }
 
-export const DOCUMENT_COLUMNS: DocumentColumn[] = [
+export const THPT_DOCUMENT_COLUMNS: DocumentColumn[] = [
     {
         id: "on-tap",
         title: "Tài liệu ôn tập",
@@ -221,6 +346,145 @@ export const DOCUMENT_COLUMNS: DocumentColumn[] = [
     },
 ];
 
+export const THCS_DOCUMENT_COLUMNS: DocumentColumn[] = [
+    {
+        id: "nen-tang",
+        title: "Tài liệu nền tảng",
+        items: [
+            {
+                id: "thcs-nen-tang-1",
+                title: "Ôn tập số tự nhiên và phép tính",
+                createdAtText: "16/05/2026",
+                thumbnailUrl: "/images/tai_lieu_hoc/OnTap.png",
+                tags: ["lop-6", "on-tap", "tom-tat", "lop-6-chuong-1"],
+                summary: "Tóm tắt kiến thức cốt lõi về số tự nhiên, ước bội và thứ tự thực hiện phép tính.",
+                content: [
+                    "Hệ thống lý thuyết trọng tâm lớp 6 theo từng dạng bài thường gặp.",
+                    "Có ví dụ minh họa ngắn và bài luyện tập giúp học sinh củng cố nền tảng.",
+                    "Phù hợp để ôn lại kiến thức đầu cấp trung học cơ sở.",
+                ],
+            },
+            {
+                id: "thcs-nen-tang-2",
+                title: "Công thức hình học cơ bản lớp 7",
+                createdAtText: "14/05/2026",
+                thumbnailUrl: "/images/tai_lieu_hoc/OnTapChung.png",
+                tags: ["lop-7", "cong-thuc", "tom-tat", "lop-7-chuong-3"],
+                summary: "Bảng công thức và định lý hình học cơ bản, trình bày ngắn gọn để dễ ghi nhớ.",
+                content: [
+                    "Tổng hợp các định lý về góc, đường thẳng song song và tam giác.",
+                    "Kèm sơ đồ ghi nhớ giúp học sinh tra cứu nhanh khi làm bài.",
+                    "Thích hợp dùng trước các bài kiểm tra chương hình học.",
+                ],
+            },
+            {
+                id: "thcs-nen-tang-3",
+                title: "Chuyên đề hằng đẳng thức đáng nhớ",
+                createdAtText: "11/05/2026",
+                thumbnailUrl: "/images/tai_lieu_hoc/GiuaKy1.png",
+                tags: ["lop-8", "chuyen-de", "on-tap", "lop-8-chuong-2"],
+                summary: "Chuyên đề trọng tâm giúp nhận diện và vận dụng hằng đẳng thức trong biến đổi biểu thức.",
+                content: [
+                    "Trình bày từng hằng đẳng thức với ví dụ minh họa trực quan.",
+                    "Bài tập được chia theo mức độ từ nhận biết đến vận dụng.",
+                    "Giúp học sinh xây chắc nền đại số trước khi lên lớp 9.",
+                ],
+            },
+        ],
+    },
+    {
+        id: "kiem-tra-thcs",
+        title: "Đề kiểm tra THCS",
+        items: [
+            {
+                id: "thcs-kiem-tra-1",
+                title: "Đề giữa kỳ 1 - Toán 6",
+                createdAtText: "09/05/2026",
+                thumbnailUrl: "/images/tai_lieu_hoc/GiuaKy2.png",
+                tags: ["lop-6", "kiem-tra", "lop-6-chuong-2"],
+                summary: "Đề giữa kỳ 1 bám sát chương trình Toán 6, phù hợp để tự luyện theo thời gian.",
+                content: [
+                    "Bao quát các dạng bài về số nguyên, phép tính và bài toán thực tế.",
+                    "Có cấu trúc cân đối giữa phần nhận biết và vận dụng.",
+                    "Hỗ trợ học sinh làm quen với cách trình bày lời giải.",
+                ],
+            },
+            {
+                id: "thcs-kiem-tra-2",
+                title: "Đề cuối kỳ 1 - Toán 8",
+                createdAtText: "06/05/2026",
+                thumbnailUrl: "/images/tai_lieu_hoc/CuoiKy1.png",
+                tags: ["lop-8", "kiem-tra", "lop-8-chuong-1"],
+                summary: "Đề tổng hợp đại số và hình học Toán 8, có mức độ phân hóa rõ ràng.",
+                content: [
+                    "Tập trung vào đa thức, hằng đẳng thức và các bài toán tứ giác.",
+                    "Phù hợp để kiểm tra tiến độ học tập trước kỳ thi học kỳ.",
+                    "Có gợi ý đáp án cho các dạng bài chính.",
+                ],
+            },
+            {
+                id: "thcs-kiem-tra-3",
+                title: "Đề cuối kỳ 2 - Toán 9",
+                createdAtText: "03/05/2026",
+                thumbnailUrl: "/images/tai_lieu_hoc/CuoiKy2.png",
+                tags: ["lop-9", "kiem-tra", "lop-9-chuong-2"],
+                summary: "Đề cuối kỳ 2 giúp hệ thống lại kiến thức trọng tâm Toán 9 trước giai đoạn ôn thi.",
+                content: [
+                    "Bao gồm hàm số bậc nhất, hệ phương trình và hình học.",
+                    "Câu hỏi được sắp xếp theo mức độ từ cơ bản đến nâng cao.",
+                    "Phù hợp để đánh giá năng lực trước khi bước vào lớp 10.",
+                ],
+            },
+        ],
+    },
+    {
+        id: "on-thi-vao-10",
+        title: "Ôn thi vào lớp 10",
+        items: [
+            {
+                id: "thcs-on-thi-1",
+                title: "Tổng ôn đại số lớp 9",
+                createdAtText: "01/05/2026",
+                thumbnailUrl: "/images/tai_lieu_hoc/THPTQuocGia.png",
+                tags: ["lop-9", "luyen-thi", "on-tap", "lop-9-chuong-1"],
+                summary: "Tài liệu tổng ôn đại số lớp 9 phục vụ giai đoạn nước rút trước kỳ thi vào 10.",
+                content: [
+                    "Hệ thống căn thức, hàm số, phương trình và hệ phương trình.",
+                    "Mỗi chuyên đề có ví dụ mẫu và bài luyện theo dạng.",
+                    "Giúp học sinh rà soát nhanh phần kiến thức dễ mất điểm.",
+                ],
+            },
+            {
+                id: "thcs-on-thi-2",
+                title: "Chuyên đề hình học ôn thi vào 10",
+                createdAtText: "27/04/2026",
+                thumbnailUrl: "/images/tai_lieu_hoc/DanhGiaNangLuc.png",
+                tags: ["lop-9", "luyen-thi", "chuyen-de", "lop-9-chuong-3"],
+                summary: "Chuyên đề hình học lớp 9 với các dạng bài thường xuất hiện trong đề tuyển sinh lớp 10.",
+                content: [
+                    "Tập trung vào hệ thức lượng, đường tròn và chứng minh hình học.",
+                    "Có chiến lược nhận diện giả thiết và dựng hướng giải.",
+                    "Phù hợp cho học sinh cần nâng điểm phần hình học.",
+                ],
+            },
+            {
+                id: "thcs-on-thi-3",
+                title: "Bộ đề luyện thi vào lớp 10",
+                createdAtText: "24/04/2026",
+                thumbnailUrl: "/images/tai_lieu_hoc/DanhGiaTuDuy.png",
+                tags: ["lop-9", "luyen-thi", "kiem-tra", "lop-9-chuong-2"],
+                summary: "Bộ đề luyện thi vào lớp 10 theo cấu trúc quen thuộc, hỗ trợ rèn tốc độ làm bài.",
+                content: [
+                    "Đề được sắp xếp theo mức độ để học sinh luyện theo lộ trình.",
+                    "Có phần gợi ý cách phân bổ thời gian và kiểm tra kết quả.",
+                    "Dùng tốt cho giai đoạn luyện đề tổng hợp.",
+                ],
+            },
+        ],
+    },
+];
+
+export const DOCUMENT_COLUMNS = [...THPT_DOCUMENT_COLUMNS, ...THCS_DOCUMENT_COLUMNS];
 export const DOCUMENT_ITEMS = DOCUMENT_COLUMNS.flatMap((column) => column.items);
 
 export function getDocumentDetailPath(documentId: string) {
@@ -255,6 +519,20 @@ export function getLatestDocuments(limit = 4, excludeId?: string) {
         .slice()
         .sort((a, b) => parseDateText(b.createdAtText) - parseDateText(a.createdAtText))
         .slice(0, limit);
+}
+
+export function getDocumentsByTags({
+    includeAnyTags = [],
+    includeAllTags = [],
+    limit,
+}: DocumentFilter) {
+    const items = DOCUMENT_ITEMS.filter((item) => {
+        const matchesAny = includeAnyTags.length === 0 || includeAnyTags.some((tag) => item.tags.includes(tag));
+        const matchesAll = includeAllTags.length === 0 || includeAllTags.every((tag) => item.tags.includes(tag));
+        return matchesAny && matchesAll;
+    }).sort((a, b) => parseDateText(b.createdAtText) - parseDateText(a.createdAtText));
+
+    return typeof limit === "number" ? items.slice(0, limit) : items;
 }
 
 export function filterDocuments({
