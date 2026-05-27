@@ -38,5 +38,9 @@ export const API_ENDPOINTS = {
     tags: {
         publicSeoSearch: "/tags/public/seo/search",
     },
+    teacherProfiles: {
+        publicSeoList: "/teacher-profiles/public/seo",
+        publicSeoDetail: (slug: string) => `/teacher-profiles/public/seo/${encodeURIComponent(slug)}`,
+    },
     contact: "/contact",
 } as const;

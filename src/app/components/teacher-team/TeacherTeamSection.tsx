@@ -2,36 +2,77 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { Swiper as SwiperInstance } from "swiper";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import MediaRenderer from "@/components/common/MediaRenderer";
-import { useSeoMediaSlot } from "@/hooks/useSeoMediaSlot";
-import { PAGE_SEO_MEDIA_SLOTS, type SeoMediaItem } from "@/lib/api";
+import { usePublicSeoTeacherProfiles } from "@/hooks/usePublicSeoTeacherProfiles";
+import type { PublicSeoTeacherProfileItem } from "@/lib/api";
 
-type TeacherProfile = {
-    id: number;
+type TeacherCardData = {
+    id: number | string;
+    slug?: string;
     role: string;
     name: string;
     years: number;
+    profileImageUrl?: string;
 };
-
-type TeacherCardData = TeacherProfile & {
-    media?: SeoMediaItem;
-};
-
-const TEACHER_PROFILES: TeacherProfile[] = [
-    { id: 1, role: "Giáo viên Toán", name: "Thầy NGUYỄN KHẮC NGỌC", years: 6 },
-    { id: 2, role: "Giáo viên Toán", name: "Cô TRẦN MAI ANH", years: 8 },
-    { id: 3, role: "Giáo viên Toán", name: "Thầy PHẠM HỮU ĐẠT", years: 7 },
-    { id: 4, role: "Giáo viên Toán", name: "Cô LÊ KHÁNH LINH", years: 5 },
-    { id: 5, role: "Giáo viên Toán", name: "Thầy ĐINH MINH QUÂN", years: 9 },
-    { id: 6, role: "Giáo viên Toán", name: "Cô NGÔ THU HẰNG", years: 6 },
-];
 
 const HOME_TEACHER_MEDIA_SIZE = { width: 744, height: 860 };
+
+function getTextValue(value: unknown) {
+    return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function getNumberValue(value: unknown) {
+    if (typeof value === "number" && Number.isFinite(value)) {
+        return value;
+    }
+
+    if (typeof value === "string") {
+        const parsedValue = Number(value);
+        return Number.isFinite(parsedValue) ? parsedValue : 0;
+    }
+
+    return 0;
+}
+
+function normalizeImageSrc(value: unknown) {
+    const src = getTextValue(value);
+
+    if (!src) {
+        return undefined;
+    }
+
+    if (/^https?:\/\//i.test(src) || src.startsWith("/")) {
+        return src;
+    }
+
+    return `/${src.replace(/^\/+/, "")}`;
+}
+
+function getTeacherDetailHref(slug: string) {
+    return `/doi-ngu/giao-vien/chi-tiet/${encodeURIComponent(slug)}`;
+}
+
+function toTeacherCardData(profile: PublicSeoTeacherProfileItem, index: number): TeacherCardData {
+    const slug = getTextValue(profile.slug);
+
+    return {
+        id: profile.teacherProfileId ?? profile.slug ?? index,
+        slug,
+        role:
+            getTextValue(profile.headline) ??
+            getTextValue(profile.expertise) ??
+            getTextValue(profile.teachingSubjects) ??
+            "Giáo viên BeeEdu",
+        name: getTextValue(profile.displayName) ?? "Giáo viên BeeEdu",
+        years: getNumberValue(profile.yearsExperience),
+        profileImageUrl: normalizeImageSrc(profile.profileImageUrl),
+    };
+}
 
 function TeacherSectionHeader() {
     return (
@@ -76,21 +117,23 @@ function ExperienceBadge({ years }: { years: number }) {
 }
 
 function TeacherSlideCard({ teacher, isActive }: { teacher: TeacherCardData; isActive: boolean }) {
-    return (
+    const content = (
         <article
             className={`relative overflow-hidden rounded-[32px] bg-cyan-300 p-3 transition-all duration-700 ease-out ${isActive
                 ? "z-20 scale-[1.03] opacity-100 shadow-[0_20px_48px_rgba(25,77,182,0.18)] ring-2 ring-white"
                 : "z-10 scale-[0.95] opacity-80 shadow-[0_10px_24px_rgba(25,77,182,0.10)] ring-1 ring-white/70"
-                }`}
+                } group-hover:shadow-[0_22px_52px_rgba(25,77,182,0.22)]`}
         >
             <div className="overflow-hidden rounded-[26px] bg-zinc-100" style={{ aspectRatio: "372 / 430" }}>
-                {teacher.media ? (
-                    <MediaRenderer
-                        item={teacher.media}
+                {teacher.profileImageUrl ? (
+                    <Image
+                        src={teacher.profileImageUrl}
+                        alt={`Ảnh giáo viên ${teacher.name}`}
+                        width={HOME_TEACHER_MEDIA_SIZE.width}
+                        height={HOME_TEACHER_MEDIA_SIZE.height}
                         className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                        imageLoading="lazy"
-                        fallbackWidth={HOME_TEACHER_MEDIA_SIZE.width}
-                        fallbackHeight={HOME_TEACHER_MEDIA_SIZE.height}
+                        loading="lazy"
+                        unoptimized
                     />
                 ) : (
                     <div className="flex h-full w-full items-center justify-center bg-[#FDD22C]/25 p-6 text-center text-sm font-semibold text-blue-900">
@@ -99,13 +142,27 @@ function TeacherSlideCard({ teacher, isActive }: { teacher: TeacherCardData; isA
                 )}
             </div>
 
-            <ExperienceBadge years={teacher.years} />
+            {teacher.years > 0 ? <ExperienceBadge years={teacher.years} /> : null}
 
             <div className="flex min-h-[104px] flex-col justify-center px-2 py-4 text-center">
                 <p className="text-sm font-normal text-blue-800 md:text-base">{teacher.role}</p>
                 <h3 className="mt-1 text-lg font-bold uppercase text-blue-800 md:text-2xl">{teacher.name}</h3>
             </div>
         </article>
+    );
+
+    if (!teacher.slug) {
+        return content;
+    }
+
+    return (
+        <Link
+            href={getTeacherDetailHref(teacher.slug)}
+            className="group block h-full"
+            aria-label={`Xem hồ sơ ${teacher.name}`}
+        >
+            {content}
+        </Link>
     );
 }
 
@@ -149,20 +206,26 @@ function SliderProgress({
 }
 
 export default function TeacherTeamSection() {
-    const { items, loading } = useSeoMediaSlot(PAGE_SEO_MEDIA_SLOTS.home.teacherTeam, {
+    const {
+        profiles,
+        loading: profilesLoading,
+        error: profilesError,
+    } = usePublicSeoTeacherProfiles({
         page: 1,
         limit: 10,
+        isFeatured: true,
+        sortBy: "sortOrder",
+        sortOrder: "asc",
     });
     const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
     const [activeIndex, setActiveIndex] = useState(0);
 
     const teachers = useMemo<TeacherCardData[]>(() => {
-        return TEACHER_PROFILES.map((teacher, index) => ({
-            ...teacher,
-            media: items[index],
-        }));
-    }, [items]);
+        return profiles.map((profile, index) => toTeacherCardData(profile, index));
+    }, [profiles]);
 
+    const loading = profilesLoading;
+    const displayActiveIndex = teachers.length > 0 ? Math.min(activeIndex, teachers.length - 1) : 0;
     const hasMultipleItems = teachers.length > 1;
 
     return (
@@ -174,6 +237,12 @@ export default function TeacherTeamSection() {
                     <div className="relative overflow-hidden pt-2 pb-4 px-2">
                         {loading ? (
                             <TeacherSlideSkeleton />
+                        ) : teachers.length === 0 ? (
+                            <div className="mx-auto flex min-h-[280px] max-w-3xl items-center justify-center rounded-[32px] bg-[#FDD22C]/20 p-8 text-center text-sm font-semibold text-blue-900 md:text-base">
+                                {profilesError
+                                    ? "Chưa tải được danh sách giáo viên."
+                                    : "Chưa có giáo viên nổi bật."}
+                            </div>
                         ) : (
                             <Swiper
                                 modules={[Autoplay]}
@@ -211,7 +280,7 @@ export default function TeacherTeamSection() {
                                         key={teacher.id}
                                         className="!h-auto py-6"
                                     >
-                                        <TeacherSlideCard teacher={teacher} isActive={index === activeIndex} />
+                                        <TeacherSlideCard teacher={teacher} isActive={index === displayActiveIndex} />
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
@@ -240,7 +309,7 @@ export default function TeacherTeamSection() {
                         {hasMultipleItems && !loading ? (
                             <SliderProgress
                                 total={teachers.length}
-                                activeIndex={activeIndex}
+                                activeIndex={displayActiveIndex}
                                 onSelect={(index) => swiper?.slideToLoop(index)}
                             />
                         ) : null}
