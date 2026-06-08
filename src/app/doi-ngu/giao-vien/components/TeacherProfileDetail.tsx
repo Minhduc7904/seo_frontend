@@ -24,6 +24,9 @@ import type { PublicSeoTeacherProfileItem } from "@/lib/api";
 type TeacherProfileDetailProps = {
     profile: PublicSeoTeacherProfileItem;
     moreProfiles: PublicSeoTeacherProfileItem[];
+    backHref?: string;
+    backLabel?: string;
+    detailBasePath?: string;
 };
 
 type DetailSectionProps = {
@@ -123,8 +126,12 @@ function formatDate(value?: string) {
     });
 }
 
-function getTeacherHref(slug: string) {
-    return `/doi-ngu/giao-vien/chi-tiet/${encodeURIComponent(slug)}`;
+const DEFAULT_DETAIL_BASE_PATH = "/doi-ngu/giao-vien/chi-tiet";
+const DEFAULT_BACK_HREF = "/doi-ngu";
+const DEFAULT_BACK_LABEL = "Quay lại đội ngũ";
+
+function getTeacherHref(slug: string, detailBasePath = DEFAULT_DETAIL_BASE_PATH) {
+    return `${detailBasePath.replace(/\/$/, "")}/${encodeURIComponent(slug)}`;
 }
 
 function PillList({ items }: { items: string[] }) {
@@ -198,10 +205,18 @@ function InfoRow({
     return <div className="flex items-start gap-3 rounded-2xl border border-slate-100 p-3">{content}</div>;
 }
 
-function MoreTeacherCard({ profile }: { profile: PublicSeoTeacherProfileItem }) {
+function MoreTeacherCard({
+    profile,
+    detailBasePath,
+    fallbackHref,
+}: {
+    profile: PublicSeoTeacherProfileItem;
+    detailBasePath: string;
+    fallbackHref: string;
+}) {
     const slug = getTextValue(profile.slug);
     const imageSrc = normalizeImageSrc(profile.profileImageUrl);
-    const href = slug ? getTeacherHref(slug) : "/doi-ngu";
+    const href = slug ? getTeacherHref(slug, detailBasePath) : fallbackHref;
 
     return (
         <Link href={href} className="group block rounded-2xl border border-slate-100 p-3 transition hover:border-blue-200 hover:bg-blue-50/50">
@@ -235,7 +250,13 @@ function MoreTeacherCard({ profile }: { profile: PublicSeoTeacherProfileItem }) 
     );
 }
 
-export default function TeacherProfileDetail({ profile, moreProfiles }: TeacherProfileDetailProps) {
+export default function TeacherProfileDetail({
+    profile,
+    moreProfiles,
+    backHref = DEFAULT_BACK_HREF,
+    backLabel = DEFAULT_BACK_LABEL,
+    detailBasePath = DEFAULT_DETAIL_BASE_PATH,
+}: TeacherProfileDetailProps) {
     const imageSrc = normalizeImageSrc(profile.profileImageUrl);
     const yearsExperience = getNumberValue(profile.yearsExperience);
     const viewCount = getNumberValue(profile.viewCount);
@@ -254,11 +275,11 @@ export default function TeacherProfileDetail({ profile, moreProfiles }: TeacherP
             <div className="layout-grid gap-y-6">
                 <section className="col-span-4 space-y-6 rounded-[1.6rem] bg-white py-6 md:col-span-5 md:py-7 xl:col-span-8">
                     <Link
-                        href="/doi-ngu"
+                        href={backHref}
                         className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-900"
                     >
                         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                        Quay lại đội ngũ
+                        {backLabel}
                     </Link>
 
                     <article className="space-y-6">
@@ -495,7 +516,12 @@ export default function TeacherProfileDetail({ profile, moreProfiles }: TeacherP
                         {moreProfiles.length > 0 ? (
                             <div className="space-y-3">
                                 {moreProfiles.map((item) => (
-                                    <MoreTeacherCard key={item.slug ?? item.teacherProfileId} profile={item} />
+                                    <MoreTeacherCard
+                                        key={item.slug ?? item.teacherProfileId}
+                                        profile={item}
+                                        detailBasePath={detailBasePath}
+                                        fallbackHref={backHref}
+                                    />
                                 ))}
                             </div>
                         ) : (

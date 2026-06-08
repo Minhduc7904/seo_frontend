@@ -1,6 +1,6 @@
 import RevealOnScroll from "@/components/common/RevealOnScroll";
 import OfflineHeroSection from "@/app/khoa-hoc-offline/components/offline-hero/OfflineHeroSection";
-import OfflineCourseSelectionSection from "@/app/khoa-hoc-offline/components/course-selection/OfflineCourseSelectionSection";
+import OfflineTeacherListingSection from "@/app/khoa-hoc-offline/components/offline-teachers/OfflineTeacherListingSection";
 
 export default function KhoaHocOfflinePage() {
     return (
@@ -10,7 +10,7 @@ export default function KhoaHocOfflinePage() {
             </RevealOnScroll>
 
             <RevealOnScroll className="w-full">
-                <OfflineCourseSelectionSection />
+                <OfflineTeacherListingSection />
             </RevealOnScroll>
         </div>
     );
