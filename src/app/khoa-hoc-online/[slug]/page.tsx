@@ -8,6 +8,7 @@ import {
     getOnlineCourseBySlug,
     ONLINE_COURSE_DETAILS,
 } from "@/app/khoa-hoc-online/data/online-courses";
+import { STUDENT_LOGIN_URL } from "@/lib/student-login";
 
 const DETAIL_IMAGE_SIZE = { width: 640, height: 420 };
 
@@ -207,12 +208,12 @@ export default async function OnlineCourseDetailPage({ params }: OnlineCourseDet
                                     {course.priceNote ? <p className="mt-2 text-xs text-red-500">{course.priceNote}</p> : null}
                                 </div>
 
-                                <button
-                                    type="button"
-                                    className="mt-5 w-full rounded-full bg-blue-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-800"
+                                <a
+                                    href={STUDENT_LOGIN_URL}
+                                    className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-blue-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-800"
                                 >
                                     Đăng ký khóa học
-                                </button>
+                                </a>
 
                                 <div className="mt-5 space-y-3 text-sm text-slate-600">
                                     <div className="flex items-center gap-3">

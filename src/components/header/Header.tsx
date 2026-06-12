@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { STUDENT_LOGIN_URL } from "@/lib/student-login";
 
 type DropdownMenuItem = {
     label: string;
@@ -213,7 +214,7 @@ export default function Header() {
 
                 <div className="hidden items-center justify-end md:col-span-2 md:col-start-7 md:flex xl:col-span-2 xl:col-start-11">
                     <a
-                        href="https://beeedu.vn/student/login"
+                        href={STUDENT_LOGIN_URL}
                         className="cursor-pointer whitespace-nowrap rounded-lg bg-[#194DB6] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#FDD22C]"
                     >
                         Đăng nhập
@@ -363,7 +364,7 @@ export default function Header() {
                         })}
 
                         <a
-                            href="https://beeedu.vn/student/login"
+                            href={STUDENT_LOGIN_URL}
                             className="block bg-[#194DB6] px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#FDD22C]"
                         >
                             Đăng nhập

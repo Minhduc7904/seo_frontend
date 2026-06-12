@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { STUDENT_LOGIN_URL } from "@/lib/student-login";
 
 export default function ReadyBanner() {
     return (
@@ -7,12 +7,12 @@ export default function ReadyBanner() {
                 <p className="text-base font-normal text-black ">
                     Bạn đã sẵn sàng học cùng Bee?
                 </p>
-                <Link
-                    href="#"
+                <a
+                    href={STUDENT_LOGIN_URL}
                     className="inline-flex items-center justify-center gap-2.5 text-base font-semibold text-blue-800"
                 >
                     Đăng ký ngay
-                </Link>
+                </a>
             </div>
         </section>
     );

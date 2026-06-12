@@ -3,6 +3,7 @@ import { Open_Sans } from "next/font/google";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import ScrollToTopButton from "@/components/common/ScrollToTopButton";
+import StudentLoginRedirect from "@/components/common/StudentLoginRedirect";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -62,6 +63,7 @@ export default function RootLayout({
           </div>
         </div>
         <ScrollToTopButton />
+        <StudentLoginRedirect />
       </body>
     </html>
   );

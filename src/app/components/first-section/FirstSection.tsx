@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import SeoMediaSlot from "@/components/common/SeoMediaSlot";
 import { PAGE_SEO_MEDIA_SLOTS } from "@/lib/api";
+import { STUDENT_LOGIN_URL } from "@/lib/student-login";
 import RankingBoard from "./RankingBoard";
 import StatsSection from "./StatsSection";
 
@@ -35,13 +35,13 @@ export default function FirstSection() {
                                 Trung Tâm giáo dục tại Bạch Mai, ôn thi THPT Quốc gia, ôn thi HSA, TSA
                             </p>
 
-                            <Link
-                                href="/khoa-hoc-offline"
+                            <a
+                                href={STUDENT_LOGIN_URL}
                                 className="group pointer-events-auto mt-5 inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#FDD22C] px-5 py-3 text-sm font-bold text-blue-900 shadow-[0_16px_36px_rgba(0,0,0,0.22)] outline-none transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:bg-white hover:shadow-[0_20px_42px_rgba(0,0,0,0.28)] focus-visible:ring-2 focus-visible:ring-[#FDD22C] focus-visible:ring-offset-2 focus-visible:ring-offset-black/40 md:px-6 md:text-base"
                             >
                                 Học ngay
                                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
-                            </Link>
+                            </a>
                         </div>
                     </div>
                 </div>
